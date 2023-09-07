@@ -1,9 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:jb1/components/utils.dart';
 import 'package:jb1/pages/home.dart';
 import 'package:jb1/pages/login.dart';
 
 import 'package:firebase_core/firebase_core.dart';
+import 'package:jb1/pages/trackers.dart';
+import 'package:jb1/pages/tracking.dart';
 import 'firebase_options.dart';
 
 Future<void> main() async {
@@ -13,6 +16,8 @@ Future<void> main() async {
   );
   runApp(const MyApp());
 }
+
+final navigatorKey = GlobalKey<NavigatorState>();
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -41,7 +46,8 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: ""),
+      scaffoldMessengerKey: Utils.messengerKey,
+      home: tracking(),
       debugShowCheckedModeBanner: false,
     );
   }

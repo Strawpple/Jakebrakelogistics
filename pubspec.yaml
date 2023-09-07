@@ -38,6 +38,11 @@ dependencies:
   firebase_core: ^2.15.1
   firebase_auth: ^4.9.0
   flutter_launcher_icons: ^0.13.1
+  email_validator: ^2.1.17
+  animated_notch_bottom_bar: ^1.0.0
+  flutter_svg: ^2.0.7
+  cloud_firestore: ^4.9.1
+  elegant_notification: ^1.11.0
 
 dev_dependencies:
   flutter_test:
@@ -49,6 +54,25 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
+
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/icon/icon.png"
+  min_sdk_android: 21 # android min sdk min:16, default 21
+  web:
+    generate: true
+    image_path: "path/to/image.png"
+    background_color: "#hexcode"
+    theme_color: "#hexcode"
+  windows:
+    generate: true
+    image_path: "path/to/image.png"
+    icon_size: 48 # min:48, max:256, default: 48
+  macos:
+    generate: true
+    image_path: "path/to/image.png"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -63,7 +87,7 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - lib/assets/JBLLogoColored.png
+    - lib/assets/jb1.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
