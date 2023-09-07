@@ -185,6 +185,7 @@ class Page3 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final pickuptime = TextEditingController();
     final sw = MediaQuery.of(context).size.width;
     return Container(
         color: Colors.white,
@@ -219,7 +220,17 @@ class Page3 extends StatelessWidget {
             Container(
                 child: Divider(
               color: Colors.black,
-            ))
+            )),
+            Container(
+              width: sw / 1.5,
+              child: TextFormField(
+                controller: pickuptime,
+                cursorColor: Colors.white,
+                textInputAction: TextInputAction.next,
+                decoration: InputDecoration(labelText: "Pickup Date"),
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+              ),
+            ),
           ],
         )));
   }
