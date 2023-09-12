@@ -5,6 +5,7 @@ import 'package:jb1/pages/home.dart';
 import 'package:jb1/pages/login.dart';
 
 import 'package:firebase_core/firebase_core.dart';
+import 'package:jb1/pages/otp.dart';
 import 'package:jb1/pages/trackers.dart';
 import 'package:jb1/pages/tracking.dart';
 import 'firebase_options.dart';
@@ -47,7 +48,10 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       scaffoldMessengerKey: Utils.messengerKey,
-      home: tracking(),
+      // home: otp(),
+
+      home: MyHomePage(title: ''),
+      // home: otp(),
       debugShowCheckedModeBanner: false,
     );
   }
