@@ -1,3 +1,5 @@
+import 'package:firebase_auth/firebase_auth.dart';
+
 class Trackers {
   final String trackingnum;
   final String pickuploc;
@@ -27,4 +29,19 @@ class Trackers {
       this.delyr = "",
       this.deltime = "",
       this.status = ""});
+}
+
+class Users {
+  final String id;
+  final String firsname;
+  final String lastname;
+  final String email;
+  final String phone;
+
+  Users(
+      {this.id = "",
+      this.firsname = "",
+      this.lastname = "",
+      this.email = "",
+      this.phone = ""});
 }

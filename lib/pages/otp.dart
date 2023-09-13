@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:jb1/pages/login.dart';
@@ -11,6 +12,9 @@ class otp extends StatefulWidget {
 }
 
 class _otpState extends State<otp> {
+  // Firebase firestore
+  final CollectionReference account =
+      FirebaseFirestore.instance.collection('user_accounts');
   FirebaseAuth auth = FirebaseAuth.instance;
   final pinController = TextEditingController();
   String? smsText;
@@ -77,6 +81,7 @@ class _otpState extends State<otp> {
                       smsCode: pinController.text);
 
                   await auth.signInWithCredential(credential);
+
 
                   Navigator.pop(context);
                 })),

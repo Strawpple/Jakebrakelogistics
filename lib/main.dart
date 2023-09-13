@@ -2,10 +2,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:jb1/components/utils.dart';
 import 'package:jb1/pages/home.dart';
+import 'package:jb1/pages/information.dart';
 import 'package:jb1/pages/login.dart';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:jb1/pages/otp.dart';
+import 'package:jb1/pages/password.dart';
 import 'package:jb1/pages/trackers.dart';
 import 'package:jb1/pages/tracking.dart';
 import 'firebase_options.dart';
@@ -51,7 +53,7 @@ class MyApp extends StatelessWidget {
       // home: otp(),
 
       home: MyHomePage(title: ''),
-      // home: otp(),
+      // home: password(),
       debugShowCheckedModeBanner: false,
     );
   }
@@ -84,7 +86,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: Text('Something went wrong!'),
               );
             } else if (snapshot.hasData) {
-              return home();
+              return information();
             } else {
               return login();
             }

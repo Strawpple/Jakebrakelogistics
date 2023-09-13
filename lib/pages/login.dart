@@ -1,12 +1,15 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl_phone_field/countries.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:jb1/components/utils.dart';
+import 'package:jb1/data/api.dart';
 import 'package:jb1/main.dart';
 import 'package:jb1/pages/createaccount.dart';
 import 'package:jb1/pages/otp.dart';
+import 'package:jb1/pages/password.dart';
 import 'package:pinput/pinput.dart';
 
 class login extends StatefulWidget {
@@ -18,8 +21,46 @@ class login extends StatefulWidget {
 }
 
 String? phnum;
+List fetchPhone = [];
+List<Users> setUser = [];
+String? hasData;
 
 class _loginState extends State<login> {
+  final FirebaseFirestore db = FirebaseFirestore.instance;
+
+  void initState() {
+    super.initState();
+
+    List<Users> user = [];
+    List phone = [];
+
+    db
+        .collection('user_accounts')
+        .orderBy("est_created_at", descending: true)
+        .get()
+        .then((querySnapshot) async {
+      for (var docSnapshot in querySnapshot.docs) {
+        Users data = Users(
+          id: docSnapshot.id,
+          firsname: docSnapshot.data()['firstname'],
+          lastname: docSnapshot.data()['lastname'],
+          email: docSnapshot.data()['email'],
+          phone: docSnapshot.data()['phonenumber'],
+        );
+
+        print(docSnapshot.data()['phonenumber']);
+
+        user.add(data);
+        phone.add(docSnapshot.data()['phonenumber']);
+
+        setState(() {
+          setUser = user;
+          fetchPhone = phone;
+        });
+      }
+    });
+  }
+
   bool isChecked = false;
   bool otpCont = false;
   bool verify = true;
@@ -98,6 +139,14 @@ class _loginState extends State<login> {
                       },
                     ),
                   ),
+                  // Container(
+                  //   child: ElevatedButton(
+                  //     child: Text('Test'),
+                  //     onPressed: () async {
+                  //       test();
+                  //     },
+                  //   ),
+                  // ),
                   Container(
                     width: sw / 1.5,
                     child: Visibility(
@@ -111,38 +160,40 @@ class _loginState extends State<login> {
                         onPressed: () async {
                           // signIn();
                           if (_formKey.currentState!.validate()) {
-                            // print("hi");
-                            print(num.toString());
+                            setState(() {
+                              phnum = num.toString();
+                            });
 
-                            // setState(() {
-                            //   otpCont = true;
-                            //   verify = false;
-                            // });
+                            // print(fetchPhone);
+                            int index = fetchPhone.indexWhere(
+                                (element) => element == num.toString());
 
-                            await FirebaseAuth.instance.verifyPhoneNumber(
-                              phoneNumber: num.toString(),
-                              timeout: const Duration(seconds: 60),
-                              // phoneNumber: '+639065178566',
-                              verificationCompleted:
-                                  (PhoneAuthCredential credential) async {
-                                await auth.signInWithCredential(credential);
-                              },
-                              verificationFailed: (FirebaseAuthException e) {
-                                if (e.code == 'invalid-phone-number') {
-                                  print(
-                                      'The provided phone number is not valid.');
-                                }
-                              },
-                              codeSent: (String verificationId,
-                                  int? resendToken) async {
-                                login.verify = verificationId;
-                                openOtp();
-                              },
-                              codeAutoRetrievalTimeout:
-                                  (String verificationId) {},
-                            );
-
-                            // signIn();
+                            if (index != -1) {
+                              openPassword();
+                            } else {
+                              await FirebaseAuth.instance.verifyPhoneNumber(
+                                phoneNumber: num.toString(),
+                                timeout: const Duration(seconds: 60),
+                                // phoneNumber: '+639065178566',
+                                verificationCompleted:
+                                    (PhoneAuthCredential credential) async {
+                                  await auth.signInWithCredential(credential);
+                                },
+                                verificationFailed: (FirebaseAuthException e) {
+                                  if (e.code == 'invalid-phone-number') {
+                                    print(
+                                        'The provided phone number is not valid.');
+                                  }
+                                },
+                                codeSent: (String verificationId,
+                                    int? resendToken) async {
+                                  login.verify = verificationId;
+                                  openOtp();
+                                },
+                                codeAutoRetrievalTimeout:
+                                    (String verificationId) {},
+                              );
+                            }
                           }
                         },
                       ),
@@ -376,6 +427,23 @@ class _loginState extends State<login> {
         });
   }
 
+  Future openPassword() async {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            content: StatefulBuilder(
+                builder: (BuildContext context, StateSetter setState) {
+              return password();
+            }),
+          );
+        }).then((value) => {
+          setState(() {
+            sms = value;
+          })
+        });
+  }
+
   // Future openOtpDialog() => showDialog(
   //     context: context,
   //     builder: (context) => StatefulBuilder(
@@ -414,4 +482,6 @@ class _loginState extends State<login> {
       print(e);
     }
   }
+
+  Future test() async {}
 }
