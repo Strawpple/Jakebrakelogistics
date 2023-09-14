@@ -16,6 +16,7 @@ class login extends StatefulWidget {
   const login({super.key});
 
   static String verify = "";
+  static String reAuth = "";
   @override
   State<login> createState() => _loginState();
 }
@@ -36,7 +37,7 @@ class _loginState extends State<login> {
 
     db
         .collection('user_accounts')
-        .orderBy("est_created_at", descending: true)
+        .orderBy("created_at", descending: true)
         .get()
         .then((querySnapshot) async {
       for (var docSnapshot in querySnapshot.docs) {
@@ -48,7 +49,7 @@ class _loginState extends State<login> {
           phone: docSnapshot.data()['phonenumber'],
         );
 
-        print(docSnapshot.data()['phonenumber']);
+        // print(docSnapshot.data()['phonenumber']);
 
         user.add(data);
         phone.add(docSnapshot.data()['phonenumber']);
@@ -101,7 +102,7 @@ class _loginState extends State<login> {
               child: const Center(
             child: Text(
               "Jakebrake Logistics",
-              style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
             ),
           )),
           Container(
@@ -148,13 +149,17 @@ class _loginState extends State<login> {
                   //   ),
                   // ),
                   Container(
+                    child: SizedBox(height: 50),
+                  ),
+                  Container(
+                    height: 50,
                     width: sw / 1.5,
                     child: Visibility(
                       visible: verify,
                       child: ElevatedButton(
                         child: const Text(
                           "Verify",
-                          style: TextStyle(color: Colors.black),
+                          style: TextStyle(color: Colors.black, fontSize: 18),
                         ),
                         style: ElevatedButton.styleFrom(primary: Colors.blue),
                         onPressed: () async {
@@ -199,58 +204,6 @@ class _loginState extends State<login> {
                       ),
                     ),
                   ),
-                  // Container(
-                  //   width: sw / 1.5,
-                  //   child: TextFormField(
-                  //     controller: email,
-                  //     cursorColor: Colors.white,
-                  //     textInputAction: TextInputAction.next,
-                  //     decoration: InputDecoration(labelText: "Email"),
-                  //     autovalidateMode: AutovalidateMode.onUserInteraction,
-                  //     validator: (email) =>
-                  //         email != null && !EmailValidator.validate(email)
-                  //             ? 'Enter a valid email'
-                  //             : null,
-                  //   ),
-                  // ),
-                  // Container(
-                  //   width: sw / 1.5,
-                  //   child: TextFormField(
-                  //     obscureText: true,
-                  //     controller: password,
-                  //     cursorColor: Colors.white,
-                  //     textInputAction: TextInputAction.next,
-                  //     decoration: InputDecoration(labelText: "Password"),
-                  //     autovalidateMode: AutovalidateMode.onUserInteraction,
-                  //     validator: (value) => value != null && value.length < 6
-                  //         ? 'Enter min. 6 characters'
-                  //         : null,
-                  //   ),
-                  // ),
-                  // SizedBox(
-                  //   width: 250,
-                  //   child: TextFormField(
-                  //     controller: trackingNum,
-                  //     cursorColor: Colors.black,
-                  //     style: const TextStyle(color: Colors.black),
-                  //     keyboardType: TextInputType.name,
-                  //     // inputFormatters: <TextInputFormatter>[
-                  //     //   // for below version 2 use this
-                  //     //   FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
-                  //     //   // for version 2 and greater youcan also use this
-                  //     //   FilteringTextInputFormatter.digitsOnly
-                  //     // ],
-                  //     decoration: const InputDecoration(
-                  //         labelText: "Tracking Number",
-                  //         labelStyle: TextStyle(color: Colors.black)),
-                  //     validator: (value) {
-                  //       if (value == null || value.isEmpty) {
-                  //         return 'Please enter some text';
-                  //       }
-                  //       return null;
-                  //     },
-                  //   ),
-                  // ),
                   Container(
                     child: const SizedBox(height: 10),
                   ),
@@ -442,45 +395,6 @@ class _loginState extends State<login> {
             sms = value;
           })
         });
-  }
-
-  // Future openOtpDialog() => showDialog(
-  //     context: context,
-  //     builder: (context) => StatefulBuilder(
-  //         builder: (context, setState) => AlertDialog(
-  //               title: Text('Test'),
-  //               content: CheckboxListTile(
-  //                 controlAffinity: ListTileControlAffinity.leading,
-  //                 title: Text(
-  //                   isChecked ? 'Yes' : 'No',
-  //                   style: TextStyle(fontSize: 24),
-  //                 ),
-  //                 value: isChecked,
-  //                 onChanged: (isChecked) =>
-  //                     setState(() => this.isChecked = isChecked!),
-  //               ),
-  //             )));
-
-  //  Productions
-  Future<bool> verifyOTP(String otp) async {
-    var credentials = await auth.signInWithCredential(
-        PhoneAuthProvider.credential(
-            verificationId: verificationId.value, smsCode: pinController.text));
-    return credentials.user != null ? true : false;
-  }
-
-  Future codeFunc() async {
-    try {
-      String smsCode = pinController.text;
-      // String smsCode = '123456';
-      PhoneAuthCredential credential = PhoneAuthProvider.credential(
-          verificationId: verificationId, smsCode: smsCode);
-
-      // Sign the user in (or link) with the credential
-      await auth.signInWithCredential(credential);
-    } catch (e) {
-      print(e);
-    }
   }
 
   Future test() async {}

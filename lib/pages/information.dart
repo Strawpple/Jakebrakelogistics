@@ -1,3 +1,4 @@
+import 'package:bcrypt/bcrypt.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:elegant_notification/elegant_notification.dart';
 import 'package:elegant_notification/resources/arrays.dart';
@@ -15,7 +16,9 @@ class information extends StatefulWidget {
 }
 
 class _informationState extends State<information> {
+  FirebaseAuth auth = FirebaseAuth.instance;
   final formKey = GlobalKey<FormState>();
+
   // Firebase firestore
   final CollectionReference account =
       FirebaseFirestore.instance.collection('user_accounts');
@@ -48,7 +51,7 @@ class _informationState extends State<information> {
                   child: const Center(
                 child: Text(
                   "Jakebrake Logistics",
-                  style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
                 ),
               )),
               Container(
@@ -57,8 +60,11 @@ class _informationState extends State<information> {
               Container(
                 child: Text(
                   "Information",
-                  style: TextStyle(fontSize: 20),
+                  style: TextStyle(fontSize: 25),
                 ),
+              ),
+              Container(
+                child: SizedBox(height: 20),
               ),
               Container(
                 width: sw / 1.5,
@@ -124,13 +130,14 @@ class _informationState extends State<information> {
                 ),
               ),
               Container(
-                child: const SizedBox(height: 10),
+                child: const SizedBox(height: 30),
               ),
               Container(
                 width: sw / 1.5,
+                height: 60,
                 child: ElevatedButton(
                   child: Text(
-                    "Create Account",
+                    "Submit",
                     style: TextStyle(color: Colors.black),
                   ),
                   style: ElevatedButton.styleFrom(primary: Colors.blue),
@@ -140,37 +147,57 @@ class _informationState extends State<information> {
                 ),
               ),
               Container(
+                child: SizedBox(height: 20),
+              ),
+              Container(
                 width: sw / 1.5,
+                height: 60,
                 child: ElevatedButton(
                   child: Text(
-                    "Skip for now",
+                    "Cancel",
                     style: TextStyle(color: Colors.black),
                   ),
                   style: ElevatedButton.styleFrom(primary: Colors.white),
                   onPressed: () async {
-                    DateTime now = new DateTime.now();
-                    DateTime date = new DateTime(now.year, now.month, now.day);
-                    Map<String, dynamic> data = {
-                      'firstname': firstname.text,
-                      'lastname': lastname.text,
-                      'phonenumber': phnum.toString(),
-                      'email': email.text,
-                      // 'password': password.text,
-                      'created_at': date,
-                    };
-                    ElegantNotification.success(
-                      width: 360,
-                      notificationPosition: NotificationPosition.topLeft,
-                      animation: AnimationType.fromTop,
-                      title: Text('Register'),
-                      description: Text('Registration Successful!'),
-                      onDismiss: () {},
-                    ).show(context);
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => home()));
+                    Navigator.pop(context);
                   },
                 ),
               ),
+              // Container(
+              //   width: sw / 1.5,
+              //   child: ElevatedButton(
+              //     child: Text(
+              //       "Skip for now",
+              //       style: TextStyle(color: Colors.black),
+              //     ),
+              //     style: ElevatedButton.styleFrom(primary: Colors.white),
+              //     onPressed: () async {
+              //       DateTime now = new DateTime.now();
+              //       DateTime date = new DateTime(now.year, now.month, now.day);
+              //       String hashedPassword =
+              //           BCrypt.hashpw(password.text, BCrypt.gensalt());
+
+              //       Map<String, dynamic> data = {
+              //         'firstname': firstname.text,
+              //         'lastname': lastname.text,
+              //         'phonenumber': phnum.toString(),
+              //         'email': email.text,
+              //         'password': hashedPassword,
+              //         'created_at': date,
+              //       };
+              //       ElegantNotification.success(
+              //         width: 360,
+              //         notificationPosition: NotificationPosition.topLeft,
+              //         animation: AnimationType.fromTop,
+              //         title: Text('Register'),
+              //         description: Text('Registration Successful!'),
+              //         onDismiss: () {},
+              //       ).show(context);
+              //       Navigator.push(context,
+              //           MaterialPageRoute(builder: (context) => home()));
+              //     },
+              //   ),
+              // ),
             ],
           )),
     ));
@@ -179,18 +206,23 @@ class _informationState extends State<information> {
   Future signUp() async {
     DateTime now = new DateTime.now();
     DateTime date = new DateTime(now.year, now.month, now.day);
+    String hashedPassword = BCrypt.hashpw(password.text, BCrypt.gensalt());
 
     Map<String, dynamic> data = {
+      'authphone_uid': uid.toString(),
       'firstname': firstname.text,
       'lastname': lastname.text,
       'phonenumber': phnum.toString(),
       'email': email.text,
-      // 'password': password.text,
+      'password': hashedPassword,
       'created_at': date,
     };
 
     if (formKey.currentState!.validate()) {
       account.add(data);
+
+      FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: email.text, password: password.text);
 
       ElegantNotification.success(
         width: 360,
@@ -200,8 +232,9 @@ class _informationState extends State<information> {
         description: Text('Registration Successful!'),
         onDismiss: () {},
       ).show(context);
+      Navigator.pop(context);
 
-      Navigator.push(context, MaterialPageRoute(builder: (context) => home()));
+      // await auth.signInWithCredential();
     }
   }
 }

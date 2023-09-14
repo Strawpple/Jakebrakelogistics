@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:jb1/pages/information.dart';
 import 'package:jb1/pages/login.dart';
 import 'package:pinput/pinput.dart';
 
@@ -18,6 +19,7 @@ class _otpState extends State<otp> {
   FirebaseAuth auth = FirebaseAuth.instance;
   final pinController = TextEditingController();
   String? smsText;
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -34,7 +36,7 @@ class _otpState extends State<otp> {
         Container(
           child: Text(
             "Verification",
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
           ),
         ),
         Container(
@@ -43,7 +45,10 @@ class _otpState extends State<otp> {
           ),
         ),
         Container(
-          child: Text("Enter the OTP send to your phone number"),
+          child: Text(
+            "Enter the OTP send to your phone number",
+            style: TextStyle(fontSize: 20),
+          ),
         ),
         Container(
           child: SizedBox(
@@ -82,24 +87,28 @@ class _otpState extends State<otp> {
 
                   await auth.signInWithCredential(credential);
 
+                  // Navigator.push(
+                  //     context,
+                  //     MaterialPageRoute(
+                  //         builder: (context) => information(cred: credential)));
 
                   Navigator.pop(context);
                 })),
-        Container(
-          margin: EdgeInsets.only(left: 30),
-          child: Column(children: [
-            Container(
-              child: Text("Didn't receive any code? "),
-            ),
-            Container(
-              child: InkWell(
-                  child: Text(
-                'Resend New Code',
-                style: TextStyle(fontWeight: FontWeight.bold),
-              )),
-            )
-          ]),
-        )
+        // Container(
+        //   margin: EdgeInsets.only(left: 30),
+        //   child: Column(children: [
+        //     Container(
+        //       child: Text("Didn't receive any code? "),
+        //     ),
+        //     Container(
+        //       child: InkWell(
+        //           child: Text(
+        //         'Resend New Code',
+        //         style: TextStyle(fontWeight: FontWeight.bold),
+        //       )),
+        //     )
+        //   ]),
+        // )
       ]),
     );
   }

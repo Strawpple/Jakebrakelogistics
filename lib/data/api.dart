@@ -37,11 +37,13 @@ class Users {
   final String lastname;
   final String email;
   final String phone;
+  final String auth;
 
   Users(
       {this.id = "",
       this.firsname = "",
       this.lastname = "",
       this.email = "",
-      this.phone = ""});
+      this.phone = "",
+      this.auth = ""});
 }

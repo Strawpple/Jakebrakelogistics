@@ -86,7 +86,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: Text('Something went wrong!'),
               );
             } else if (snapshot.hasData) {
-              return information();
+              return home();
             } else {
               return login();
             }

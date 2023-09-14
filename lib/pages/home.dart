@@ -8,6 +8,7 @@ import 'package:flutter/widgets.dart';
 
 import 'package:jb1/components/openDetails.dart';
 import 'package:jb1/data/api.dart';
+import 'package:jb1/pages/information.dart';
 
 class home extends StatefulWidget {
   const home({super.key});
@@ -216,24 +217,24 @@ class _Page1State extends State<Page1> {
               children: [
                 Container(
                   child: SizedBox(
-                    height: 15,
+                    height: 50,
                   ),
                 ),
                 Container(
                   child: Text(
                     "Jakebrake Logistics Load Management",
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
                   ),
                 ),
                 Container(
                   child: SizedBox(height: 15),
                 ),
                 Container(
+                  margin: EdgeInsets.only(left: 13),
                   width: sw,
-                  margin: EdgeInsets.only(left: 15),
                   child: Text(
                     "Trackers",
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                   ),
                 ),
                 Container(
@@ -696,12 +697,67 @@ class Page3 extends StatelessWidget {
   }
 }
 
-class Page4 extends StatelessWidget {
+class Page4 extends StatefulWidget {
   const Page4({Key? key}) : super(key: key);
+  @override
+  State<Page4> createState() => _Page4State();
+}
+
+String? uid;
+int? findPhone;
+List fetchPhone = [];
+List<Users> userAcc = [];
+String? newnum;
+
+class _Page4State extends State<Page4> {
+  final user = FirebaseAuth.instance.currentUser!;
+  @override
+  void initState() {
+    final FirebaseFirestore db = FirebaseFirestore.instance;
+    // TODO: implement initState
+    super.initState();
+
+    List phone = [];
+    List<Users> uAcc = [];
+
+    db
+        .collection('user_accounts')
+        .where('email', isEqualTo: user.email.toString())
+        .orderBy("created_at", descending: true)
+        .get()
+        .then((querySnapshot) async {
+      for (var docSnapshot in querySnapshot.docs) {
+        Users data = Users(
+            id: docSnapshot.id,
+            firsname: docSnapshot.data()['firstname'],
+            lastname: docSnapshot.data()['lastname'],
+            email: docSnapshot.data()['email'],
+            phone: docSnapshot.data()['phonenumber'],
+            auth: docSnapshot.data()['authphone_uid']);
+
+        uAcc.add(data);
+        phone.add(docSnapshot.data()['phonenumber']);
+
+        setState(() {
+          fetchPhone = phone;
+          userAcc = uAcc;
+        });
+      }
+    });
+
+    print(user.email.toString());
+
+    // int index = fetchPhone
+    //     .indexWhere((element) => element == user.phoneNumber.toString());
+    // print(index);
+
+    setState(() {
+      // findPhone = index;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    final user = FirebaseAuth.instance.currentUser!;
     final sw = MediaQuery.of(context).size.width;
     return Container(
         color: Colors.white,
@@ -709,20 +765,110 @@ class Page4 extends StatelessWidget {
             child: Column(
           children: [
             Container(
-              child: SizedBox(height: 50),
+              child: SizedBox(height: 100),
             ),
             Container(
-              child: Text("Personal Information"),
+              child: Text(
+                "Personal Information",
+                style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+              ),
             ),
             Container(
-              child: Text(user.phoneNumber.toString()),
+              child: SizedBox(
+                height: 25,
+              ),
+            ),
+            if (user.email == null)
+              Container(
+                child: Column(children: [
+                  Container(
+                    child: Text(
+                      'No Records Found!',
+                      style: TextStyle(fontSize: 22),
+                    ),
+                  ),
+                  Container(
+                    child: SizedBox(height: 15),
+                  ),
+                  Container(
+                    child: InkWell(
+                      child: Text(
+                        'Verify now',
+                        style: TextStyle(
+                            fontSize: 22, decoration: TextDecoration.underline),
+                      ),
+                      onTap: () async {
+                        setState(() {
+                          uid = user.uid;
+                        });
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => information()));
+                      },
+                    ),
+                  ),
+                ]),
+              ),
+            if (user.email != null)
+              Container(
+                  child: Column(
+                children: [
+                  Container(
+                    child: SizedBox(height: 15),
+                  ),
+                  Container(
+                      height: 200,
+                      child: ListView.builder(
+                          itemCount: userAcc.length,
+                          itemBuilder: (context, index) {
+                            if (userAcc.length == 1) {
+                              return Container(
+                                child: Column(children: [
+                                  Container(
+                                    child: Text(
+                                      userAcc[index].firsname +
+                                          ' ' +
+                                          userAcc[index].lastname,
+                                      style: TextStyle(fontSize: 22),
+                                    ),
+                                  ),
+                                  Container(
+                                    child: SizedBox(height: 15),
+                                  ),
+                                  Container(
+                                    child: Text(
+                                      userAcc[index].phone,
+                                      style: TextStyle(fontSize: 22),
+                                    ),
+                                  ),
+                                  Container(
+                                    child: SizedBox(height: 15),
+                                  ),
+                                  Container(
+                                    child: Text(
+                                      userAcc[index].email,
+                                      style: TextStyle(fontSize: 22),
+                                    ),
+                                  ),
+                                ]),
+                              );
+                            }
+                          })),
+                ],
+              )),
+            Container(
+              child: SizedBox(height: 30),
             ),
             Container(
+              height: 50,
+              width: 200,
               child: ElevatedButton(
                 child: Text(
                   "Sign Out",
-                  style: TextStyle(color: Colors.black),
+                  style: TextStyle(color: Colors.black, fontSize: 18),
                 ),
+                style: ElevatedButton.styleFrom(primary: Colors.red),
                 onPressed: () async {
                   FirebaseAuth.instance.signOut();
                 },
