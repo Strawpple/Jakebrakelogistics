@@ -8,7 +8,9 @@ import 'package:flutter/widgets.dart';
 
 import 'package:jb1/components/openDetails.dart';
 import 'package:jb1/data/api.dart';
+import 'package:jb1/pages/addTracker.dart';
 import 'package:jb1/pages/information.dart';
+import 'package:jb1/pages/trackerupdate.dart';
 
 class home extends StatefulWidget {
   const home({super.key});
@@ -227,7 +229,7 @@ class _Page1State extends State<Page1> {
                   ),
                 ),
                 Container(
-                  child: SizedBox(height: 15),
+                  child: SizedBox(height: 10),
                 ),
                 Container(
                   margin: EdgeInsets.only(left: 13),
@@ -248,7 +250,7 @@ class _Page1State extends State<Page1> {
                   child: SizedBox(height: 5),
                 ),
                 Container(
-                  height: 40,
+                  height: 55,
                   width: sw / 1.1,
                   child: TextField(
                     decoration: InputDecoration(
@@ -272,20 +274,23 @@ class _Page1State extends State<Page1> {
                       itemBuilder: ((context, index) {
                         if (trackingnum.isEmpty) {
                           return Container(
-                            height: 200,
+                            height: 265,
                             width: sw,
                             child: Card(
                               color: Colors.white,
                               child: Column(children: [
                                 Container(
-                                  margin: EdgeInsets.only(left: 10),
+                                  child: SizedBox(height: 15),
+                                ),
+                                Container(
+                                  margin: EdgeInsets.only(left: 48),
                                   child: Row(children: [
                                     Container(
                                       child: Text(
                                         '#',
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold,
-                                            fontSize: 16),
+                                            fontSize: 22),
                                       ),
                                     ),
                                     Container(
@@ -293,40 +298,34 @@ class _Page1State extends State<Page1> {
                                         listTracker[index].trackingnum,
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold,
-                                            fontSize: 16),
+                                            fontSize: 22),
                                       ),
                                     ),
                                     Container(
-                                      child: SizedBox(width: 30),
+                                      child: SizedBox(width: 50),
                                     ),
                                     Container(
-                                      child: Text(
-                                        'Tracking Status: ',
-                                        style: TextStyle(fontSize: 16),
-                                      ),
-                                    ),
-                                    if (listTracker[index].status ==
-                                        'NOT STARTED')
-                                      Container(
+                                      child: InkWell(
                                         child: Text(
-                                          listTracker[index].status,
-                                          style: TextStyle(color: Colors.red),
+                                          'Update Status',
+                                          style: TextStyle(
+                                              fontSize: 22,
+                                              decoration:
+                                                  TextDecoration.underline),
                                         ),
+                                        onTap: () async {
+                                          openStatus();
+                                        },
                                       ),
-                                    if (listTracker[index].status == 'STARTED')
-                                      Container(
-                                        child: Text(
-                                          listTracker[index].status,
-                                          style: TextStyle(color: Colors.red),
-                                        ),
-                                      )
+                                    )
                                   ]),
                                 ),
+
                                 Container(
                                   child: SizedBox(height: 15),
                                 ),
                                 Container(
-                                  margin: EdgeInsets.only(left: 25),
+                                  margin: EdgeInsets.only(left: 48),
                                   child: Row(children: [
                                     Container(
                                       child: Column(children: [
@@ -336,39 +335,48 @@ class _Page1State extends State<Page1> {
                                             style: TextStyle(
                                                 color: Colors.green,
                                                 fontWeight: FontWeight.bold,
-                                                fontSize: 16),
+                                                fontSize: 22),
                                           ),
                                         ),
                                         Container(
                                           margin: EdgeInsets.only(left: 20),
                                           child: Text(
                                             listTracker[index].pickuploc,
-                                            style: TextStyle(fontSize: 15),
+                                            style: TextStyle(fontSize: 22),
                                           ),
                                         )
                                       ]),
                                     ),
                                     Container(
-                                      child: SizedBox(width: 180),
+                                      child: SizedBox(width: 60),
                                     ),
                                     Container(
                                       child: Column(children: [
                                         Container(
                                           child: Text(
-                                              listTracker[index].pickupmon +
-                                                  '/' +
-                                                  listTracker[index].pickupday),
+                                            listTracker[index].pickupmon +
+                                                '/' +
+                                                listTracker[index].pickupday,
+                                            style: TextStyle(fontSize: 22),
+                                          ),
                                         ),
                                         Container(
                                           child: Text(
-                                              listTracker[index].pickuptime),
+                                            listTracker[index].pickuptime,
+                                            style: TextStyle(fontSize: 22),
+                                          ),
                                         )
                                       ]),
                                     ),
                                   ]),
                                 ),
                                 Container(
-                                  margin: EdgeInsets.only(left: 25),
+                                  child: SizedBox(
+                                    height: 15,
+                                  ),
+                                ),
+                                Container(
+                                  margin: EdgeInsets.only(left: 48),
                                   child: Row(children: [
                                     Container(
                                       child: Column(children: [
@@ -378,35 +386,70 @@ class _Page1State extends State<Page1> {
                                             style: TextStyle(
                                                 color: Colors.green,
                                                 fontWeight: FontWeight.bold,
-                                                fontSize: 16),
+                                                fontSize: 22),
                                           ),
                                         ),
                                         Container(
                                           margin: EdgeInsets.only(left: 20),
                                           child: Text(
                                             listTracker[index].deliveryloc,
-                                            style: TextStyle(fontSize: 15),
+                                            style: TextStyle(fontSize: 22),
                                           ),
                                         )
                                       ]),
                                     ),
                                     Container(
-                                      child: SizedBox(width: 175),
+                                      child: SizedBox(width: 60),
                                     ),
                                     Container(
                                       child: Column(children: [
                                         Container(
                                           child: Text(
-                                              listTracker[index].delmon +
-                                                  '/' +
-                                                  listTracker[index].delday),
+                                            listTracker[index].delmon +
+                                                '/' +
+                                                listTracker[index].delday,
+                                            style: TextStyle(fontSize: 22),
+                                          ),
                                         ),
                                         Container(
-                                          child:
-                                              Text(listTracker[index].deltime),
+                                          child: Text(
+                                            listTracker[index].deltime,
+                                            style: TextStyle(fontSize: 22),
+                                          ),
                                         )
                                       ]),
                                     ),
+                                  ]),
+                                ),
+                                Container(
+                                  child: SizedBox(height: 15),
+                                ),
+                                Container(
+                                  margin: EdgeInsets.only(left: 48),
+                                  child: Row(children: [
+                                    Container(
+                                      child: Text(
+                                        'Tracking Status: ',
+                                        style: TextStyle(fontSize: 22),
+                                      ),
+                                    ),
+                                    if (listTracker[index].status ==
+                                        'NOT STARTED')
+                                      Container(
+                                        child: Text(
+                                          listTracker[index].status,
+                                          style: TextStyle(
+                                              color: Colors.red, fontSize: 22),
+                                        ),
+                                      ),
+                                    if (listTracker[index].status == 'STARTED')
+                                      Container(
+                                        child: Text(
+                                          listTracker[index].status,
+                                          style: TextStyle(
+                                              color: Colors.red, fontSize: 22),
+                                        ),
+                                      ),
                                   ]),
                                 ),
                                 Container(
@@ -438,20 +481,23 @@ class _Page1State extends State<Page1> {
                             .toLowerCase()
                             .startsWith(trackingnum.toLowerCase())) {
                           return Container(
-                            height: 200,
+                            height: 300,
                             width: sw,
                             child: Card(
                               color: Colors.white,
                               child: Column(children: [
                                 Container(
-                                  margin: EdgeInsets.only(left: 10),
+                                  child: SizedBox(height: 25),
+                                ),
+                                Container(
+                                  margin: EdgeInsets.only(left: 48),
                                   child: Row(children: [
                                     Container(
                                       child: Text(
                                         '#',
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold,
-                                            fontSize: 16),
+                                            fontSize: 22),
                                       ),
                                     ),
                                     Container(
@@ -459,40 +505,17 @@ class _Page1State extends State<Page1> {
                                         listTracker[index].trackingnum,
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold,
-                                            fontSize: 16),
+                                            fontSize: 22),
                                       ),
                                     ),
-                                    Container(
-                                      child: SizedBox(width: 30),
-                                    ),
-                                    Container(
-                                      child: Text(
-                                        'Tracking Status: ',
-                                        style: TextStyle(fontSize: 16),
-                                      ),
-                                    ),
-                                    if (listTracker[index].status ==
-                                        'NOT STARTED')
-                                      Container(
-                                        child: Text(
-                                          listTracker[index].status,
-                                          style: TextStyle(color: Colors.red),
-                                        ),
-                                      ),
-                                    if (listTracker[index].status == 'STARTED')
-                                      Container(
-                                        child: Text(
-                                          listTracker[index].status,
-                                          style: TextStyle(color: Colors.red),
-                                        ),
-                                      )
                                   ]),
                                 ),
+
                                 Container(
                                   child: SizedBox(height: 15),
                                 ),
                                 Container(
-                                  margin: EdgeInsets.only(left: 25),
+                                  margin: EdgeInsets.only(left: 48),
                                   child: Row(children: [
                                     Container(
                                       child: Column(children: [
@@ -502,39 +525,48 @@ class _Page1State extends State<Page1> {
                                             style: TextStyle(
                                                 color: Colors.green,
                                                 fontWeight: FontWeight.bold,
-                                                fontSize: 16),
+                                                fontSize: 22),
                                           ),
                                         ),
                                         Container(
                                           margin: EdgeInsets.only(left: 20),
                                           child: Text(
                                             listTracker[index].pickuploc,
-                                            style: TextStyle(fontSize: 15),
+                                            style: TextStyle(fontSize: 22),
                                           ),
                                         )
                                       ]),
                                     ),
                                     Container(
-                                      child: SizedBox(width: 180),
+                                      child: SizedBox(width: 60),
                                     ),
                                     Container(
                                       child: Column(children: [
                                         Container(
                                           child: Text(
-                                              listTracker[index].pickupmon +
-                                                  '/' +
-                                                  listTracker[index].pickupday),
+                                            listTracker[index].pickupmon +
+                                                '/' +
+                                                listTracker[index].pickupday,
+                                            style: TextStyle(fontSize: 22),
+                                          ),
                                         ),
                                         Container(
                                           child: Text(
-                                              listTracker[index].pickuptime),
+                                            listTracker[index].pickuptime,
+                                            style: TextStyle(fontSize: 22),
+                                          ),
                                         )
                                       ]),
                                     ),
                                   ]),
                                 ),
                                 Container(
-                                  margin: EdgeInsets.only(left: 25),
+                                  child: SizedBox(
+                                    height: 15,
+                                  ),
+                                ),
+                                Container(
+                                  margin: EdgeInsets.only(left: 48),
                                   child: Row(children: [
                                     Container(
                                       child: Column(children: [
@@ -544,35 +576,70 @@ class _Page1State extends State<Page1> {
                                             style: TextStyle(
                                                 color: Colors.green,
                                                 fontWeight: FontWeight.bold,
-                                                fontSize: 16),
+                                                fontSize: 22),
                                           ),
                                         ),
                                         Container(
                                           margin: EdgeInsets.only(left: 20),
                                           child: Text(
                                             listTracker[index].deliveryloc,
-                                            style: TextStyle(fontSize: 15),
+                                            style: TextStyle(fontSize: 22),
                                           ),
                                         )
                                       ]),
                                     ),
                                     Container(
-                                      child: SizedBox(width: 175),
+                                      child: SizedBox(width: 60),
                                     ),
                                     Container(
                                       child: Column(children: [
                                         Container(
                                           child: Text(
-                                              listTracker[index].delmon +
-                                                  '/' +
-                                                  listTracker[index].delday),
+                                            listTracker[index].delmon +
+                                                '/' +
+                                                listTracker[index].delday,
+                                            style: TextStyle(fontSize: 22),
+                                          ),
                                         ),
                                         Container(
-                                          child:
-                                              Text(listTracker[index].deltime),
+                                          child: Text(
+                                            listTracker[index].deltime,
+                                            style: TextStyle(fontSize: 22),
+                                          ),
                                         )
                                       ]),
                                     ),
+                                  ]),
+                                ),
+                                Container(
+                                  child: SizedBox(height: 15),
+                                ),
+                                Container(
+                                  margin: EdgeInsets.only(left: 48),
+                                  child: Row(children: [
+                                    Container(
+                                      child: Text(
+                                        'Tracking Status: ',
+                                        style: TextStyle(fontSize: 22),
+                                      ),
+                                    ),
+                                    if (listTracker[index].status ==
+                                        'NOT STARTED')
+                                      Container(
+                                        child: Text(
+                                          listTracker[index].status,
+                                          style: TextStyle(
+                                              color: Colors.red, fontSize: 22),
+                                        ),
+                                      ),
+                                    if (listTracker[index].status == 'STARTED')
+                                      Container(
+                                        child: Text(
+                                          listTracker[index].status,
+                                          style: TextStyle(
+                                              color: Colors.red, fontSize: 22),
+                                        ),
+                                      ),
                                   ]),
                                 ),
                                 Container(
@@ -591,8 +658,7 @@ class _Page1State extends State<Page1> {
                                 //       onTap: () async {
                                 //         openDetails();
                                 //         setState(() {
-                                //           idDetails =
-                                //               listTracker[index].trackingnum;
+                                //           idDetails = listTracker[index].trackingnum;
                                 //         });
                                 //       },
                                 //     ))
@@ -614,6 +680,19 @@ class _Page1State extends State<Page1> {
             content: StatefulBuilder(
                 builder: (BuildContext context, StateSetter setState) {
               return viewDetails();
+            }),
+          );
+        }).then((value) => {setState(() {})});
+  }
+
+  Future openStatus() async {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            content: StatefulBuilder(
+                builder: (BuildContext context, StateSetter setState) {
+              return trackerupdate();
             }),
           );
         }).then((value) => {setState(() {})});
@@ -641,59 +720,148 @@ class _Page2State extends State<Page2> {
   }
 }
 
-class Page3 extends StatelessWidget {
+class Page3 extends StatefulWidget {
   const Page3({Key? key}) : super(key: key);
+  @override
+  State<Page3> createState() => _Page3State();
+}
+
+List<accTracker> accTrack = [];
+
+class _Page3State extends State<Page3> {
+  final user = FirebaseAuth.instance.currentUser!;
+  final FirebaseFirestore db = FirebaseFirestore.instance;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    List<accTracker> acctrack = [];
+
+    db
+        .collection('account-trackers_collection')
+        .where('trackeremail', isEqualTo: user.email.toString())
+        .orderBy("created_at", descending: true)
+        .get()
+        .then((querySnapshot) async {
+      for (var docSnapshot in querySnapshot.docs) {
+        accTracker data = accTracker(
+          id: docSnapshot.id,
+          email: docSnapshot.data()['trackeremail'],
+          trackno: docSnapshot.data()['trackingnum'],
+        );
+
+        acctrack.add(data);
+
+        setState(() {
+          accTrack = acctrack;
+        });
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    final pickuptime = TextEditingController();
     final sw = MediaQuery.of(context).size.width;
-    return Container(
-        color: Colors.white,
-        child: Center(
-            child: Column(
-          children: [
-            Container(
-              child: SizedBox(
-                height: 15,
-              ),
-            ),
-            Container(
-              child: Text(
-                "Jakebrake Logistics Load Management",
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-            ),
-            Container(
-              child: SizedBox(height: 15),
-            ),
-            Container(
-              width: sw,
-              margin: EdgeInsets.only(left: 15),
-              child: Text(
-                "Adding Trackers",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-            ),
-            Container(
-              child: SizedBox(height: 10),
-            ),
-            Container(
-                child: Divider(
-              color: Colors.black,
-            )),
-            Container(
-              width: sw / 1.5,
-              child: TextFormField(
-                controller: pickuptime,
-                cursorColor: Colors.white,
-                textInputAction: TextInputAction.next,
-                decoration: InputDecoration(labelText: "Pickup Date"),
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-              ),
-            ),
-          ],
-        )));
+    final sh = MediaQuery.of(context).size.height;
+    return SingleChildScrollView(
+        child: Container(
+            color: Colors.white,
+            child: Center(
+                child: Column(
+              children: [
+                Container(
+                  child: SizedBox(
+                    height: 50,
+                  ),
+                ),
+                Container(
+                  child: Text(
+                    "Jakebrake Logistics Load Management",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
+                  ),
+                ),
+                Container(
+                  child: SizedBox(height: 15),
+                ),
+                Container(
+                  width: sw,
+                  margin: EdgeInsets.only(left: 15),
+                  child: Text(
+                    "Tracking Number",
+                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                Container(
+                  child: SizedBox(height: 10),
+                ),
+                Container(
+                    child: Divider(
+                  color: Colors.black,
+                )),
+                Container(
+                  child: SizedBox(
+                    height: 15,
+                  ),
+                ),
+                Container(
+                  width: 300,
+                  child: ElevatedButton(
+                    child: Text(
+                      'Add Tracker ID',
+                      style: TextStyle(fontSize: 22, color: Colors.black),
+                    ),
+                    style: ElevatedButton.styleFrom(primary: Colors.blue),
+                    onPressed: () async {
+                      addTracker();
+                    },
+                  ),
+                ),
+                Container(
+                  child: SizedBox(
+                    height: 10,
+                  ),
+                ),
+                Container(
+                  height: sh,
+                  child: ListView.builder(
+                      itemCount: accTrack.length,
+                      itemBuilder: (context, index) {
+                        if (accTrack.length != 0) {
+                          return Container(
+                            child: Column(children: [
+                              Container(
+                                  child: Text(
+                                accTrack[index].trackno,
+                                style: TextStyle(
+                                  fontSize: 20,
+                                ),
+                              )),
+                              Container(
+                                width: 300,
+                                child: Divider(color: Colors.black),
+                              )
+                            ]),
+                          );
+                        }
+                      }),
+                )
+              ],
+            ))));
+  }
+
+  Future addTracker() async {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            content: StatefulBuilder(
+                builder: (BuildContext context, StateSetter setState) {
+              return addAccounTracker();
+            }),
+          );
+        }).then((value) => {setState(() {})});
   }
 }
 
@@ -745,7 +913,7 @@ class _Page4State extends State<Page4> {
       }
     });
 
-    print(user.email.toString());
+    // print(user.email.toString());
 
     // int index = fetchPhone
     //     .indexWhere((element) => element == user.phoneNumber.toString());

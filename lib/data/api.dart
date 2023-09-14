@@ -47,3 +47,11 @@ class Users {
       this.phone = "",
       this.auth = ""});
 }
+
+class accTracker {
+  final String id;
+  final String email;
+  final String trackno;
+
+  accTracker({this.id="",this.email = "", this.trackno = ""});
+}
