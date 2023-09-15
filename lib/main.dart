@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:jb1/components/utils.dart';
+import 'package:jb1/pages/formalUpdate.dart';
 import 'package:jb1/pages/home.dart';
 import 'package:jb1/pages/information.dart';
 import 'package:jb1/pages/login.dart';
@@ -29,7 +30,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Jakebrake Logistics Tracker',
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -53,7 +54,7 @@ class MyApp extends StatelessWidget {
       // home: otp(),
 
       home: MyHomePage(title: ''),
-      // home: password(),
+      // home: updateStatus(),
       debugShowCheckedModeBanner: false,
     );
   }

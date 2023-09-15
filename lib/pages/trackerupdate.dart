@@ -1,4 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:elegant_notification/elegant_notification.dart';
+import 'package:elegant_notification/resources/arrays.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:jb1/pages/confirm-detailed.dart';
+import 'package:jb1/pages/confirm.dart';
+import 'package:jb1/pages/home.dart';
 
 class trackerupdate extends StatefulWidget {
   const trackerupdate({super.key});
@@ -7,7 +14,15 @@ class trackerupdate extends StatefulWidget {
   State<trackerupdate> createState() => _trackerupdateState();
 }
 
+String? statData;
+
 class _trackerupdateState extends State<trackerupdate> {
+  final user = FirebaseAuth.instance.currentUser!;
+  final CollectionReference logs =
+      FirebaseFirestore.instance.collection('tracker_collection_logs');
+  final CollectionReference tc =
+      FirebaseFirestore.instance.collection('tracker_collection');
+
   @override
   Widget build(BuildContext context) {
     final sw = MediaQuery.of(context).size.width;
@@ -46,7 +61,7 @@ class _trackerupdateState extends State<trackerupdate> {
             Container(
               width: sw / 1.2,
               child: Text(
-                "Delivery Updates: ",
+                "Current Status: ",
                 style: TextStyle(
                     fontWeight: FontWeight.bold,
                     color: Colors.blue,
@@ -72,7 +87,17 @@ class _trackerupdateState extends State<trackerupdate> {
                                     borderRadius: BorderRadius.circular(0),
                                     side: BorderSide(color: Colors.blue)))),
                     onPressed: () async {
-                      
+                      update();
+                      setState(() {
+                        statData = 'Picked up the load. Ready to roll!';
+                      });
+                      // showDialog(
+                      //     context: context,
+                      //     barrierDismissible: false,
+                      //     builder: (context) => Center(
+                      //           child: CircularProgressIndicator(),
+                      //         ));
+                      // print(data);
                     },
                   ),
                 )
@@ -98,7 +123,12 @@ class _trackerupdateState extends State<trackerupdate> {
                                 RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(0),
                                     side: BorderSide(color: Colors.blue)))),
-                    onPressed: () async {},
+                    onPressed: () async {
+                      update();
+                      setState(() {
+                        statData = 'Made it to the halfway. No issues so far';
+                      });
+                    },
                   ),
                 )
               ]),
@@ -123,7 +153,12 @@ class _trackerupdateState extends State<trackerupdate> {
                                 RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(0),
                                     side: BorderSide(color: Colors.blue)))),
-                    onPressed: () async {},
+                    onPressed: () async {
+                      update();
+                      setState(() {
+                        statData = 'Stuck in traffic due to an accident ahead';
+                      });
+                    },
                   ),
                 )
               ]),
@@ -148,7 +183,12 @@ class _trackerupdateState extends State<trackerupdate> {
                                 RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(0),
                                     side: BorderSide(color: Colors.blue)))),
-                    onPressed: () async {},
+                    onPressed: () async {
+                      update();
+                      setState(() {
+                        statData = 'Waiting at the unloading dock instructions';
+                      });
+                    },
                   ),
                 )
               ]),
@@ -173,7 +213,12 @@ class _trackerupdateState extends State<trackerupdate> {
                                 RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(0),
                                     side: BorderSide(color: Colors.blue)))),
-                    onPressed: () async {},
+                    onPressed: () async {
+                      update();
+                      setState(() {
+                        statData = 'Weather problems, slowing me down.';
+                      });
+                    },
                   ),
                 )
               ]),
@@ -198,7 +243,13 @@ class _trackerupdateState extends State<trackerupdate> {
                                 RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(0),
                                     side: BorderSide(color: Colors.blue)))),
-                    onPressed: () async {},
+                    onPressed: () async {
+                      update();
+                      setState(() {
+                        statData =
+                            'Encountered road closures. taking a detour.';
+                      });
+                    },
                   ),
                 )
               ]),
@@ -223,7 +274,12 @@ class _trackerupdateState extends State<trackerupdate> {
                                 RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(0),
                                     side: BorderSide(color: Colors.blue)))),
-                    onPressed: () async {},
+                    onPressed: () async {
+                      update();
+                      setState(() {
+                        statData = 'Facing a minor mechanical issue.';
+                      });
+                    },
                   ),
                 )
               ]),
@@ -248,7 +304,12 @@ class _trackerupdateState extends State<trackerupdate> {
                                 RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(0),
                                     side: BorderSide(color: Colors.blue)))),
-                    onPressed: () async {},
+                    onPressed: () async {
+                      update();
+                      setState(() {
+                        statData = 'Delivery done! Getting paperwork signed.';
+                      });
+                    },
                   ),
                 )
               ]),
@@ -257,5 +318,18 @@ class _trackerupdateState extends State<trackerupdate> {
         ),
       ),
     ));
+  }
+
+  Future update() async {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            content: StatefulBuilder(
+                builder: (BuildContext context, StateSetter setState) {
+              return confirmDetailed();
+            }),
+          );
+        }).then((value) => {setState(() {})});
   }
 }
