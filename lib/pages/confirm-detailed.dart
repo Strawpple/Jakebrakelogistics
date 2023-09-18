@@ -69,7 +69,9 @@ class _confirmDetailedState extends State<confirmDetailed> {
                     'email': user.email,
                     'updated_at': now
                   };
+                  
 
+                  
                   logs.add(updateStatus);
 
                   tc.doc(statId).update(updateStatus);

@@ -7,6 +7,7 @@ import 'package:jb1/pages/information.dart';
 import 'package:jb1/pages/login.dart';
 
 import 'package:firebase_core/firebase_core.dart';
+import 'package:jb1/pages/map.dart';
 import 'package:jb1/pages/otp.dart';
 import 'package:jb1/pages/password.dart';
 import 'package:jb1/pages/trackers.dart';
@@ -54,7 +55,7 @@ class MyApp extends StatelessWidget {
       // home: otp(),
 
       home: MyHomePage(title: ''),
-      // home: updateStatus(),
+      // home: googleMap(),
       debugShowCheckedModeBanner: false,
     );
   }

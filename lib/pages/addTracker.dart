@@ -3,6 +3,7 @@ import 'package:elegant_notification/elegant_notification.dart';
 import 'package:elegant_notification/resources/arrays.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:jb1/pages/home.dart';
 
 class addAccounTracker extends StatefulWidget {
   const addAccounTracker({super.key});
@@ -91,23 +92,44 @@ class _addAccounTrackerState extends State<addAccounTracker> {
   Future submit() async {
     DateTime now = new DateTime.now();
     DateTime date = new DateTime(now.year, now.month, now.day);
-    Map<String, dynamic> data = {
-      'trackingnum': trackingnum.text,
-      'trackeremail': user.email,
-      // 'password': password.text,
-      'created_at': now,
-    };
 
-    addTrack.add(data);
+    try {
+      bool result = AllTrackerCollection.contains(trackingnum.text);
+      if (result == true) {
+        Map<String, dynamic> data = {
+          'trackingnum': trackingnum.text,
+          'trackeremail': user.email,
+          // 'password': password.text,
+          'trackingstatus': 'validated',
+          'created_at': now,
+        };
 
-    ElegantNotification.success(
-      width: 360,
-      notificationPosition: NotificationPosition.topLeft,
-      animation: AnimationType.fromTop,
-      title: Text('Tracking Number'),
-      description: Text('Added Successful!'),
-      onDismiss: () {},
-    ).show(context);
-    Navigator.pop(context);
+        addTrack.add(data);
+
+        // tc.doc(statId).update(updateStatus);
+
+        ElegantNotification.success(
+          width: 360,
+          notificationPosition: NotificationPosition.topLeft,
+          animation: AnimationType.fromTop,
+          title: Text('Tracking Number'),
+          description: Text('Added Successful!'),
+          onDismiss: () {},
+        ).show(context);
+        Navigator.pop(context);
+      } else {
+        ElegantNotification.error(
+          width: 360,
+          notificationPosition: NotificationPosition.topLeft,
+          animation: AnimationType.fromTop,
+          title: Text('Tracking Number not Found'),
+          description: Text('Enter valid tracking number!'),
+          onDismiss: () {},
+        ).show(context);
+        Navigator.pop(context);
+      }
+    } catch (e) {
+      print(e);
+    }
   }
 }

@@ -5,6 +5,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+// import 'package:geolocator/geolocator.dart';
+// import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'package:jb1/components/openDetails.dart';
 import 'package:jb1/data/api.dart';
@@ -12,6 +14,7 @@ import 'package:jb1/pages/addTracker.dart';
 import 'package:jb1/pages/formalUpdate.dart';
 import 'package:jb1/pages/information.dart';
 import 'package:jb1/pages/trackerupdate.dart';
+// import 'package:flutter_background_geolocation/flutter_background_geolocation.dart' as bg;
 
 class home extends StatefulWidget {
   const home({super.key});
@@ -19,6 +22,11 @@ class home extends StatefulWidget {
   @override
   State<home> createState() => _homeState();
 }
+
+// Notes
+// AllTrackerCollection = Global setState of account-trackers_collection db
+// account-trackers_collection db
+List AllTrackerCollection = [];
 
 List<Trackers> listTracker = [];
 
@@ -208,6 +216,33 @@ class _Page1State extends State<Page1> {
     } catch (e) {
       ident = 'false';
     }
+
+    // LIVE
+
+    List TrackerCollection = [];
+
+    db
+        .collection('account-trackers_collection')
+        .orderBy("created_at", descending: true)
+        .get()
+        .then((querySnapshot) async {
+      for (var docSnapshot in querySnapshot.docs) {
+        accTracker data = accTracker(
+          id: docSnapshot.id,
+          trackno: docSnapshot.data()['trackingnum'],
+          email: docSnapshot.data()['trackeremail'],
+        );
+
+        TrackerCollection.add(docSnapshot.data()['trackingnum']);
+        // print(docSnapshot.data()['phonenumber']);
+
+        setState(() {
+          AllTrackerCollection = TrackerCollection;
+        });
+      }
+    });
+
+    // GEOLOCATION
   }
 
   String trackingnum = "";
@@ -292,7 +327,7 @@ class _Page1State extends State<Page1> {
                         itemBuilder: ((context, index) {
                           if (trackingnum.isEmpty) {
                             return Container(
-                              height: 272,
+                              height: 300,
                               width: sw,
                               child: Card(
                                 color: Colors.white,
@@ -446,7 +481,7 @@ class _Page1State extends State<Page1> {
                                     child: SizedBox(height: 15),
                                   ),
                                   Container(
-                                    margin: EdgeInsets.only(left: 65),
+                                    margin: EdgeInsets.only(left: 55),
                                     child: Row(children: [
                                       Container(
                                         child: Text(
@@ -532,6 +567,26 @@ class _Page1State extends State<Page1> {
                                               fontSize: 22),
                                         ),
                                       ),
+                                      Container(
+                                        child: SizedBox(width: 50),
+                                      ),
+                                      Container(
+                                        child: InkWell(
+                                          child: Text(
+                                            'Update Status',
+                                            style: TextStyle(
+                                                fontSize: 22,
+                                                decoration:
+                                                    TextDecoration.underline),
+                                          ),
+                                          onTap: () async {
+                                            setState(() {
+                                              statId = listTracker[index].id;
+                                            });
+                                            openStatus();
+                                          },
+                                        ),
+                                      )
                                     ]),
                                   ),
 
@@ -640,7 +695,7 @@ class _Page1State extends State<Page1> {
                                   ),
 
                                   Container(
-                                    margin: EdgeInsets.only(left: 65),
+                                    margin: EdgeInsets.only(left: 55),
                                     child: Row(children: [
                                       Container(
                                         child: Text(
@@ -734,18 +789,106 @@ class Page2 extends StatefulWidget {
 }
 
 class _Page2State extends State<Page2> {
+  // GEOLOCATION
+  // Position? _currentLocation;
+  // late bool servicePermission = false;
+  // late LocationPermission permission;
+
+  // String _currentAddress = "";
+
+  // Future<Position> _getCurrentLocation() async {
+  //   servicePermission = await Geolocator.isLocationServiceEnabled();
+  //   if (!servicePermission) {
+  //     print("service disabled");
+  //   }
+  //   permission = await Geolocator.checkPermission();
+  //   if (permission == LocationPermission.denied) {
+  //     permission = await Geolocator.requestPermission();
+  //   }
+  //   return await Geolocator.getCurrentPosition();
+  // }
+
+  // Completer<GoogleMapController> _googleMapController = Completer();
+
+  // CameraPosition? _cameraPosition;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    // _init();
+    super.initState();
+
+    // bg.DeviceInfo? _deviceInfo;
+
+    // print(_deviceInfo);
+  }
+
+  // _init() {
+  //   _cameraPosition =
+  //       CameraPosition(target: LatLng(11.576262, 104.92222), zoom: 15);
+  // }
+
   @override
   Widget build(BuildContext context) {
     final sw = MediaQuery.of(context).size.width;
+    final sh = MediaQuery.of(context).size.height;
     return Container(
         color: Colors.white,
-        child: const Center(
-          // child: GoogleMap(
-          //     initialCameraPosition:
-          //         CameraPosition(target: sourceLocation))
-          child: Text("Page 2"),
+        child: Column(
+          children: [
+            // Container(
+            //   child: ElevatedButton(
+            //     child: Text("Get Location"),
+            //     onPressed: () async {
+            //       _currentLocation = await _getCurrentLocation();
+            //       print("${_currentLocation}");
+            //     },
+            //   ),
+            // )
+            // Container(height: sh, width: sw, child: _getMap())
+          ],
         ));
   }
+
+  // Widget _getMarker() {
+  //   return Container(
+  //     width: 40,
+  //     height: 40,
+  //     decoration: BoxDecoration(
+  //         color: Colors.white,
+  //         borderRadius: BorderRadius.circular(100),
+  //         boxShadow: [
+  //           BoxShadow(
+  //               color: Colors.grey,
+  //               offset: Offset(0, 3),
+  //               spreadRadius: 4,
+  //               blurRadius: 6)
+  //         ]),
+  //     child: ClipOval(child: Image.asset('lib/assets/pic.png')),
+  //   );
+  // }
+
+  // Widget _getMap() {
+  //   return Stack(
+  //     children: [
+  //       Container(
+  //           child: GoogleMap(
+  //         initialCameraPosition: _cameraPosition!,
+  //         mapType: MapType.normal,
+  //         onMapCreated: (GoogleMapController controller) {
+  //           if (!_googleMapController.isCompleted) {
+  //             _googleMapController.complete(controller);
+  //           }
+  //         },
+  //       )),
+  //       Positioned.fill(
+  //           child: Align(
+  //         alignment: Alignment.center,
+  //         child: _getMarker(),
+  //       ))
+  //     ],
+  //   );
+  // }
 }
 
 class Page3 extends StatefulWidget {
