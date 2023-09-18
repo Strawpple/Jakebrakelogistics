@@ -73,19 +73,19 @@ class _homeState extends State<home> {
     List livetrackingnum = [];
 
 // Fetch location tracking of the user
-    db
-        .collection('location_tracking')
-        .where('trackeremail', isEqualTo: user.email.toString())
-        .orderBy("created_at", descending: true)
-        .get()
-        .then((querySnapshot) async {
-      for (var docSnapshot in querySnapshot.docs) {
-        livetrackingnum.add(docSnapshot.data()['trackingnum']);
-        setState(() {
-          liveTracking = livetrackingnum;
-        });
-      }
-    });
+    // db
+    //     .collection('location_tracking')
+    //     .where('trackeremail', isEqualTo: user.email.toString())
+    //     .orderBy("created_at", descending: true)
+    //     .get()
+    //     .then((querySnapshot) async {
+    //   for (var docSnapshot in querySnapshot.docs) {
+    //     livetrackingnum.add(docSnapshot.data()['trackingnum']);
+    //     setState(() {
+    //       liveTracking = livetrackingnum;
+    //     });
+    //   }
+    // });
 
     Timer.periodic(Duration(minutes: 30), (timer) {
       _hourlyTask();
@@ -859,10 +859,32 @@ class Page2 extends StatefulWidget {
   State<Page2> createState() => _Page2State();
 }
 
+String? longi;
+String? latit;
+
 class _Page2State extends State<Page2> {
   // Completer<GoogleMapController> _googleMapController = Completer();
 
   // CameraPosition? _cameraPosition;
+
+  // GEOLOCATION
+  Position? _currentLocation;
+  late bool servicePermission = false;
+  late LocationPermission permission;
+
+  String _currentAddress = "";
+
+  Future<Position> _getCurrentLocation() async {
+    servicePermission = await Geolocator.isLocationServiceEnabled();
+    if (!servicePermission) {
+      print("service disabled");
+    }
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+    }
+    return await Geolocator.getCurrentPosition();
+  }
 
   @override
   void initState() {
@@ -889,12 +911,33 @@ class _Page2State extends State<Page2> {
         child: Column(
           children: [
             Container(
-              child: SizedBox(height: 30),
+              child: SizedBox(height: 150),
             ),
             Container(
+              child: Text(
+                'Longitude: ' + longi.toString(),
+                style: TextStyle(color: Colors.black, fontSize: 22),
+              ),
+            ),
+            Container(
+              child: Text(
+                'Latitude: ' + latit.toString(),
+                style: TextStyle(color: Colors.black, fontSize: 22),
+              ),
+            ),
+            Container(
+              width: 200,
               child: ElevatedButton(
-                child: Text("Get Location"),
-                onPressed: () async {},
+                child: Text(
+                  "Get Location",
+                  style: TextStyle(color: Colors.black, fontSize: 22),
+                ),
+                onPressed: () async {
+                  _currentLocation = await _getCurrentLocation();
+                  print(_currentLocation);
+                  latit = _currentLocation?.latitude.toString();
+                  longi = _currentLocation?.longitude.toString();
+                },
               ),
             )
             // Container(height: sh, width: sw, child: _getMap())
