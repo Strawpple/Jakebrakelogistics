@@ -5,7 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-// import 'package:geolocator/geolocator.dart';
+import 'package:geolocator/geolocator.dart';
 // import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'package:jb1/components/openDetails.dart';
@@ -30,8 +30,14 @@ List AllTrackerCollection = [];
 
 List<Trackers> listTracker = [];
 
+// Live Tracking
+List liveTracking = [];
+
 class _homeState extends State<home> {
+  final user = FirebaseAuth.instance.currentUser!;
   final FirebaseFirestore db = FirebaseFirestore.instance;
+  final CollectionReference lc =
+      FirebaseFirestore.instance.collection('location_tracking');
 
   /// Controller to handle PageView and also handles initial page
   final _pageController = PageController(initialPage: 0);
@@ -40,6 +46,71 @@ class _homeState extends State<home> {
   final _controller = NotchBottomBarController(index: 0);
 
   int maxCount = 5;
+  // GEOLOCATION
+  Position? _currentLocation;
+  late bool servicePermission = false;
+  late LocationPermission permission;
+
+  String _currentAddress = "";
+
+  Future<Position> _getCurrentLocation() async {
+    servicePermission = await Geolocator.isLocationServiceEnabled();
+    if (!servicePermission) {
+      print("service disabled");
+    }
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+    }
+    return await Geolocator.getCurrentPosition();
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    List livetrackingnum = [];
+
+// Fetch location tracking of the user
+    db
+        .collection('location_tracking')
+        .where('trackeremail', isEqualTo: user.email.toString())
+        .orderBy("created_at", descending: true)
+        .get()
+        .then((querySnapshot) async {
+      for (var docSnapshot in querySnapshot.docs) {
+        livetrackingnum.add(docSnapshot.data()['trackingnum']);
+        setState(() {
+          liveTracking = livetrackingnum;
+        });
+      }
+    });
+
+    Timer.periodic(Duration(minutes: 30), (timer) {
+      _hourlyTask();
+    });
+  }
+
+  void _hourlyTask() async {
+    DateTime now = new DateTime.now();
+    DateTime date = new DateTime(now.year, now.month, now.day);
+
+    _currentLocation = await _getCurrentLocation();
+    // print(_currentLocation);
+    // Map<String, dynamic> data = {
+    //   // 'trackingnum': trackingnum.text,
+    //   'current_logitude': _currentLocation?.longitude,
+    //   'current_latitude': _currentLocation?.latitude,
+    //   'trackeremail': user.email,
+    //   'created_at': now,
+    // };
+    // lc.add(data);
+
+    // lc.doc(statId).update(updateStatus);
+
+    // bool result = liveTracking.contains(trackingnum.text);
+  }
 
   @override
   void dispose() {
@@ -789,25 +860,6 @@ class Page2 extends StatefulWidget {
 }
 
 class _Page2State extends State<Page2> {
-  // GEOLOCATION
-  // Position? _currentLocation;
-  // late bool servicePermission = false;
-  // late LocationPermission permission;
-
-  // String _currentAddress = "";
-
-  // Future<Position> _getCurrentLocation() async {
-  //   servicePermission = await Geolocator.isLocationServiceEnabled();
-  //   if (!servicePermission) {
-  //     print("service disabled");
-  //   }
-  //   permission = await Geolocator.checkPermission();
-  //   if (permission == LocationPermission.denied) {
-  //     permission = await Geolocator.requestPermission();
-  //   }
-  //   return await Geolocator.getCurrentPosition();
-  // }
-
   // Completer<GoogleMapController> _googleMapController = Completer();
 
   // CameraPosition? _cameraPosition;
@@ -836,15 +888,15 @@ class _Page2State extends State<Page2> {
         color: Colors.white,
         child: Column(
           children: [
-            // Container(
-            //   child: ElevatedButton(
-            //     child: Text("Get Location"),
-            //     onPressed: () async {
-            //       _currentLocation = await _getCurrentLocation();
-            //       print("${_currentLocation}");
-            //     },
-            //   ),
-            // )
+            Container(
+              child: SizedBox(height: 30),
+            ),
+            Container(
+              child: ElevatedButton(
+                child: Text("Get Location"),
+                onPressed: () async {},
+              ),
+            )
             // Container(height: sh, width: sw, child: _getMap())
           ],
         ));

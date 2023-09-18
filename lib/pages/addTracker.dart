@@ -3,6 +3,7 @@ import 'package:elegant_notification/elegant_notification.dart';
 import 'package:elegant_notification/resources/arrays.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:jb1/pages/home.dart';
 
 class addAccounTracker extends StatefulWidget {
@@ -13,6 +14,8 @@ class addAccounTracker extends StatefulWidget {
 }
 
 class _addAccounTrackerState extends State<addAccounTracker> {
+  final CollectionReference lc =
+      FirebaseFirestore.instance.collection('location_tracking');
   final user = FirebaseAuth.instance.currentUser!;
   // Firebase firestore
   final CollectionReference addTrack =
@@ -20,6 +23,26 @@ class _addAccounTrackerState extends State<addAccounTracker> {
 
   // Text Controller
   final trackingnum = TextEditingController();
+
+  // GEOLOCATION
+  Position? _currentLocation;
+  late bool servicePermission = false;
+  late LocationPermission permission;
+
+  String _currentAddress = "";
+
+  Future<Position> _getCurrentLocation() async {
+    servicePermission = await Geolocator.isLocationServiceEnabled();
+    if (!servicePermission) {
+      print("service disabled");
+    }
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+    }
+    return await Geolocator.getCurrentPosition();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -90,6 +113,7 @@ class _addAccounTrackerState extends State<addAccounTracker> {
   }
 
   Future submit() async {
+    _currentLocation = await _getCurrentLocation();
     DateTime now = new DateTime.now();
     DateTime date = new DateTime(now.year, now.month, now.day);
 
@@ -105,6 +129,15 @@ class _addAccounTrackerState extends State<addAccounTracker> {
         };
 
         addTrack.add(data);
+
+        Map<String, dynamic> data2 = {
+          'trackingnum': trackingnum.text,
+          'current_logitude': _currentLocation?.longitude,
+          'current_latitude': _currentLocation?.latitude,
+          'trackeremail': user.email,
+          'created_at': now,
+        };
+        lc.add(data2);
 
         // tc.doc(statId).update(updateStatus);
 
