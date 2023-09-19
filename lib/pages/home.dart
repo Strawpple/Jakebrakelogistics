@@ -28,7 +28,10 @@ class home extends StatefulWidget {
 // account-trackers_collection db
 List AllTrackerCollection = [];
 
+List Tracker_Collection = [];
+
 List<Trackers> listTracker = [];
+List TrackingId = [];
 
 // Live Tracking
 List liveTracking = [];
@@ -71,23 +74,28 @@ class _homeState extends State<home> {
     super.initState();
 
     List livetrackingnum = [];
+    List idtrackingnum = [];
 
-// Fetch location tracking of the user
-    // db
-    //     .collection('location_tracking')
-    //     .where('trackeremail', isEqualTo: user.email.toString())
-    //     .orderBy("created_at", descending: true)
-    //     .get()
-    //     .then((querySnapshot) async {
-    //   for (var docSnapshot in querySnapshot.docs) {
-    //     livetrackingnum.add(docSnapshot.data()['trackingnum']);
-    //     setState(() {
-    //       liveTracking = livetrackingnum;
-    //     });
-    //   }
-    // });
+    // Fetch location tracking of the user
+    db
+        .collection('location_tracking')
+        .where('trackeremail', isEqualTo: user.email.toString())
+        .where('trackingstatus', isNotEqualTo: 'Delivered')
+        // .orderBy("created_at", descending: true)
+        .get()
+        .then((querySnapshot) async {
+      for (var docSnapshot in querySnapshot.docs) {
+        livetrackingnum.add(docSnapshot.data()['trackingnum']);
+        idtrackingnum.add(docSnapshot.id);
 
-    Timer.periodic(Duration(minutes: 30), (timer) {
+        setState(() {
+          liveTracking = livetrackingnum;
+          TrackingId = idtrackingnum;
+        });
+      }
+    });
+
+    Timer.periodic(Duration(seconds: 5), (timer) {
       _hourlyTask();
     });
   }
@@ -97,17 +105,16 @@ class _homeState extends State<home> {
     DateTime date = new DateTime(now.year, now.month, now.day);
 
     _currentLocation = await _getCurrentLocation();
-    // print(_currentLocation);
-    // Map<String, dynamic> data = {
-    //   // 'trackingnum': trackingnum.text,
-    //   'current_logitude': _currentLocation?.longitude,
-    //   'current_latitude': _currentLocation?.latitude,
-    //   'trackeremail': user.email,
-    //   'created_at': now,
-    // };
-    // lc.add(data);
+    final updateStatus = <String, dynamic>{
+      'current_latitude': _currentLocation?.latitude,
+      'current_longitude': _currentLocation?.longitude,
+      'updated_at': now
+    };
+    for (var i = 0; i < TrackingId.length; i++) {
+      lc.doc(TrackingId[i].toString()).update(updateStatus);
+    }
 
-    // lc.doc(statId).update(updateStatus);
+    //
 
     // bool result = liveTracking.contains(trackingnum.text);
   }
@@ -251,6 +258,23 @@ class _Page1State extends State<Page1> {
 
     // fetch all trackers
 
+    List tracker_collection = [];
+    db
+        .collection('tracker_collection')
+        .orderBy("created_at", descending: true)
+        .get()
+        .then((querySnapshot) async {
+      for (var docSnapshot in querySnapshot.docs) {
+        tracker_collection.add(docSnapshot.data()['trackingnum']);
+
+        setState(() {
+          Tracker_Collection = tracker_collection;
+        });
+      }
+    });
+
+    // LIVE PRODUCTION
+
     try {
       db
           .collection('tracker_collection')
@@ -275,9 +299,12 @@ class _Page1State extends State<Page1> {
             status: docSnapshot.data()['status'],
           );
 
+          tracker_collection.add(docSnapshot.data()['trackingnum']);
+
           trackers.add(data);
 
           setState(() {
+            Tracker_Collection = tracker_collection;
             listTracker = trackers;
 
             ident = docSnapshot.data()['trackingnum'];

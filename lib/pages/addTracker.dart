@@ -118,7 +118,8 @@ class _addAccounTrackerState extends State<addAccounTracker> {
     DateTime date = new DateTime(now.year, now.month, now.day);
 
     try {
-      bool result = AllTrackerCollection.contains(trackingnum.text);
+      bool result = Tracker_Collection.contains(trackingnum.text);
+      // print(Tracker_Collection);
       if (result == true) {
         Map<String, dynamic> data = {
           'trackingnum': trackingnum.text,
@@ -132,9 +133,10 @@ class _addAccounTrackerState extends State<addAccounTracker> {
 
         Map<String, dynamic> data2 = {
           'trackingnum': trackingnum.text,
-          'current_logitude': _currentLocation?.longitude,
+          'current_longitude': _currentLocation?.longitude,
           'current_latitude': _currentLocation?.latitude,
           'trackeremail': user.email,
+          'trackingstatus': 'validated',
           'created_at': now,
         };
         lc.add(data2);
