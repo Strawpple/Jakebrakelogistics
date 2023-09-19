@@ -400,6 +400,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.2.0"
+  glassycontainer:
+    dependency: "direct main"
+    description:
+      name: glassycontainer
+      sha256: "062f217332eaabc5e6e331531f8217067fb5fcef7489342227fadf0354649d18"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.6"
   googleapis:
     dependency: transitive
     description:

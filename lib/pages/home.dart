@@ -6,11 +6,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:glassycontainer/glassycontainer.dart';
 // import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'package:jb1/components/openDetails.dart';
 import 'package:jb1/data/api.dart';
 import 'package:jb1/pages/addTracker.dart';
+import 'package:jb1/pages/confirm-loc.dart';
 import 'package:jb1/pages/formalUpdate.dart';
 import 'package:jb1/pages/information.dart';
 import 'package:jb1/pages/trackerupdate.dart';
@@ -32,6 +34,9 @@ List Tracker_Collection = [];
 
 List<Trackers> listTracker = [];
 List TrackingId = [];
+
+// UPDATE STATUS TRACKINGNUMBER
+String? id;
 
 // Live Tracking
 List liveTracking = [];
@@ -73,6 +78,7 @@ class _homeState extends State<home> {
     // TODO: implement initState
     super.initState();
 
+    // print(id);
     List livetrackingnum = [];
     List idtrackingnum = [];
 
@@ -95,8 +101,8 @@ class _homeState extends State<home> {
       }
     });
 
-    Timer.periodic(Duration(seconds: 5), (timer) {
-      _hourlyTask();
+    Timer.periodic(Duration(minutes: 30), (timer) {
+      // _hourlyTask();
     });
   }
 
@@ -467,6 +473,8 @@ class _Page1State extends State<Page1> {
                                           onTap: () async {
                                             setState(() {
                                               statId = listTracker[index].id;
+                                              id = listTracker[index]
+                                                  .trackingnum;
                                             });
                                             openStatus();
                                           },
@@ -933,43 +941,51 @@ class _Page2State extends State<Page2> {
   Widget build(BuildContext context) {
     final sw = MediaQuery.of(context).size.width;
     final sh = MediaQuery.of(context).size.height;
-    return Container(
-        color: Colors.white,
-        child: Column(
-          children: [
-            Container(
-              child: SizedBox(height: 150),
-            ),
-            Container(
-              child: Text(
-                'Longitude: ' + longi.toString(),
-                style: TextStyle(color: Colors.black, fontSize: 22),
-              ),
-            ),
-            Container(
-              child: Text(
-                'Latitude: ' + latit.toString(),
-                style: TextStyle(color: Colors.black, fontSize: 22),
-              ),
-            ),
-            Container(
-              width: 200,
-              child: ElevatedButton(
-                child: Text(
-                  "Get Location",
-                  style: TextStyle(color: Colors.black, fontSize: 22),
+    return Stack(
+      children: [
+        Container(
+          height: sh,
+          child: Image.asset(
+            'lib/assets/map.jpg',
+            fit: BoxFit.fitHeight,
+          ),
+        ),
+        Container(
+            child: Positioned(
+          top: 150,
+          left: 50,
+          child: GlassyContainer(
+            height: 150,
+            width: 300,
+            color: Colors.white,
+            child: Column(
+              children: [
+                Container(
+                  child: SizedBox(height: 40),
                 ),
-                onPressed: () async {
-                  _currentLocation = await _getCurrentLocation();
-                  print(_currentLocation);
-                  latit = _currentLocation?.latitude.toString();
-                  longi = _currentLocation?.longitude.toString();
-                },
-              ),
-            )
-            // Container(height: sh, width: sw, child: _getMap())
-          ],
-        ));
+                Container(
+                  height: 60,
+                  width: 250,
+                  child: ElevatedButton(
+                    child: Text(
+                      "Update Location",
+                      style: TextStyle(color: Colors.black, fontSize: 18),
+                    ),
+                    onPressed: () async {
+                      confirmUpdate();
+                      // _currentLocation = await _getCurrentLocation();
+                      // print(_currentLocation);
+                      // latit = _currentLocation?.latitude.toString();
+                      // longi = _currentLocation?.longitude.toString();
+                    },
+                  ),
+                )
+              ],
+            ),
+          ),
+        ))
+      ],
+    );
   }
 
   // Widget _getMarker() {
@@ -1011,6 +1027,19 @@ class _Page2State extends State<Page2> {
   //     ],
   //   );
   // }
+
+  Future confirmUpdate() async {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            content: StatefulBuilder(
+                builder: (BuildContext context, StateSetter setState) {
+              return confirmLoc();
+            }),
+          );
+        }).then((value) => {setState(() {})});
+  }
 }
 
 class Page3 extends StatefulWidget {

@@ -49,6 +49,7 @@ dependencies:
   firebase_admin: ^0.2.0
   geolocator: ^10.0.1
   geocoding: ^2.1.0
+  glassycontainer: ^0.0.6
   # google_maps_flutter: ^2.2.1
   # location: ^4.4.0
 
@@ -97,6 +98,7 @@ flutter:
   assets:
     - lib/assets/jb1.png
     - lib/assets/pic.png
+    - lib/assets/map.jpg
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

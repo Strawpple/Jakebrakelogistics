@@ -13,12 +13,18 @@ class confirmUpdate extends StatefulWidget {
   State<confirmUpdate> createState() => _confirmUpdateState();
 }
 
+List LocID = [];
+String? locid;
+
 class _confirmUpdateState extends State<confirmUpdate> {
   final user = FirebaseAuth.instance.currentUser!;
+  final FirebaseFirestore db = FirebaseFirestore.instance;
   final CollectionReference logs =
       FirebaseFirestore.instance.collection('tracker_collection_logs');
   final CollectionReference tc =
       FirebaseFirestore.instance.collection('tracker_collection');
+  final CollectionReference lt =
+      FirebaseFirestore.instance.collection('location_tracking');
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -71,6 +77,26 @@ class _confirmUpdateState extends State<confirmUpdate> {
                   };
 
                   logs.add(updateStatus);
+
+                  db
+                      .collection('location_tracking')
+                      .where('trackingnum', isEqualTo: id.toString())
+                      // .orderBy("created_at", descending: true)
+                      .get()
+                      .then((querySnapshot) async {
+                    for (var docSnapshot in querySnapshot.docs) {
+                      locid = docSnapshot.id;
+                      // print(docSnapshot.id);
+                    }
+                  });
+
+                  final data = <String, dynamic>{
+                    'trackingstatus': 'Delivered',
+                    'datetime_del': now
+                  };
+
+                  print(locid.toString());
+                  lt.doc(locid).update(data);
 
                   tc.doc(statId).update(updateStatus);
                   ElegantNotification.success(
