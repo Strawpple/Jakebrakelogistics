@@ -102,7 +102,7 @@ class _homeState extends State<home> {
     });
 
     Timer.periodic(Duration(minutes: 30), (timer) {
-      // _hourlyTask();
+      _hourlyTask();
     });
   }
 
