@@ -78,6 +78,11 @@ class _confirmUpdateState extends State<confirmUpdate> {
 
                   logs.add(updateStatus);
 
+                  final data = <String, dynamic>{
+                    'trackingstatus': 'Delivered',
+                    'datetime_del': now
+                  };
+
                   db
                       .collection('location_tracking')
                       .where('trackingnum', isEqualTo: id.toString())
@@ -90,15 +95,9 @@ class _confirmUpdateState extends State<confirmUpdate> {
                     }
                   });
 
-                  final data = <String, dynamic>{
-                    'trackingstatus': 'Delivered',
-                    'datetime_del': now
-                  };
-
-                  print(locid.toString());
                   lt.doc(locid).update(data);
-
                   tc.doc(statId).update(updateStatus);
+
                   ElegantNotification.success(
                     width: 360,
                     notificationPosition: NotificationPosition.topLeft,
