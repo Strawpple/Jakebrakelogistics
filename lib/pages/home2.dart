@@ -902,7 +902,8 @@ class _Page2State extends State<Page2> {
   Location _locationController = new Location();
 
   static const LatLng _pGooglePlex = LatLng(7.178821, 125.597496);
-  static const LatLng _pApplePark = LatLng(7.078791936610768, 125.60789753165476);
+  static const LatLng _pApplePark =
+      LatLng(7.078791936610768, 125.60789753165476);
 
   LatLng? _currentP = null;
 
@@ -930,7 +931,8 @@ class _Page2State extends State<Page2> {
                   markers: {
                     Marker(
                         markerId: MarkerId("_currentLocation"),
-                        icon: BitmapDescriptor.defaultMarker,
+                        icon: BitmapDescriptor.defaultMarkerWithHue(
+                            BitmapDescriptor.hueBlue),
                         position: _currentP!),
                     Marker(
                         markerId: MarkerId("sourceLocation"),

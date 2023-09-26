@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:glassycontainer/glassycontainer.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 // import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'package:jb1/components/openDetails.dart';
@@ -16,6 +17,7 @@ import 'package:jb1/pages/confirm-loc.dart';
 import 'package:jb1/pages/formalUpdate.dart';
 import 'package:jb1/pages/information.dart';
 import 'package:jb1/pages/trackerupdate.dart';
+import 'package:location/location.dart';
 // import 'package:flutter_background_geolocation/flutter_background_geolocation.dart' as bg;
 
 class home extends StatefulWidget {
@@ -42,6 +44,10 @@ String? id;
 List liveTracking = [];
 
 class _homeState extends State<home> {
+  Location _locationController = new Location();
+
+  LatLng? _currentP = null;
+
   final user = FirebaseAuth.instance.currentUser!;
   final FirebaseFirestore db = FirebaseFirestore.instance;
   final CollectionReference lc =
@@ -102,8 +108,9 @@ class _homeState extends State<home> {
     });
 
     Timer.periodic(Duration(minutes: 30), (timer) {
-      _hourlyTask();
+      // _hourlyTask();
       // print('1');
+      getLocationUpdates();
     });
   }
 
@@ -122,6 +129,48 @@ class _homeState extends State<home> {
     }
 
     // print(_currentLocation);
+  }
+
+  Future<void> getLocationUpdates() async {
+    DateTime now = new DateTime.now();
+    bool _serviceEnabled;
+    PermissionStatus _permissionGranted;
+
+    _serviceEnabled = await _locationController.serviceEnabled();
+    if (_serviceEnabled) {
+      _serviceEnabled = await _locationController.requestService();
+    } else {
+      return;
+    }
+
+    _permissionGranted = await _locationController.hasPermission();
+    if (_permissionGranted == PermissionStatus.denied) {
+      _permissionGranted = await _locationController.requestPermission();
+      if (_permissionGranted != PermissionStatus.granted) {
+        return;
+      }
+    }
+
+    _locationController.onLocationChanged
+        .listen((LocationData currentLocation) {
+      if (currentLocation.latitude != null &&
+          currentLocation.longitude != null) {
+        setState(() {
+          _currentP =
+              LatLng(currentLocation.latitude!, currentLocation.longitude!);
+
+          // update
+          final updateStatus = <String, dynamic>{
+            'current_latitude': currentLocation.latitude!,
+            'current_longitude': currentLocation.longitude!,
+            'updated_at': now
+          };
+          for (var i = 0; i < TrackingId.length; i++) {
+            lc.doc(TrackingId[i].toString()).update(updateStatus);
+          }
+        });
+      }
+    });
   }
 
   @override
