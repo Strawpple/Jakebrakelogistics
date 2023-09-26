@@ -1,8 +1,12 @@
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:jb1/components/utils.dart';
 import 'package:jb1/pages/formalUpdate.dart';
 import 'package:jb1/pages/home.dart';
+import 'package:jb1/pages/home2.dart';
 import 'package:jb1/pages/information.dart';
 import 'package:jb1/pages/login.dart';
 
@@ -14,12 +18,30 @@ import 'package:jb1/pages/trackers.dart';
 import 'package:jb1/pages/tracking.dart';
 import 'firebase_options.dart';
 
+final FlutterLocalNotificationsPlugin flutterLocalPlugin =
+    FlutterLocalNotificationsPlugin();
+const AndroidNotificationChannel notificationChannel =
+    AndroidNotificationChannel("coding is life", "code service",
+        description: "Thanks");
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  await initservice();
   runApp(const MyApp());
+}
+
+Future<void> initservice() async {
+  //set for IOS
+  if (Platform.isIOS) {
+    await flutterLocalPlugin.initialize(
+        const InitializationSettings(iOS: DarwinInitializationSettings()));
+  }
+  await flutterLocalPlugin
+      .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin>()
+      ?.createNotificationChannel(notificationChannel);
 }
 
 final navigatorKey = GlobalKey<NavigatorState>();
@@ -88,7 +110,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: Text('Something went wrong!'),
               );
             } else if (snapshot.hasData) {
-              return home();
+              return homepage2();
             } else {
               return login();
             }

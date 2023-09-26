@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:glassycontainer/glassycontainer.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 // import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'package:jb1/components/openDetails.dart';
@@ -16,13 +17,14 @@ import 'package:jb1/pages/confirm-loc.dart';
 import 'package:jb1/pages/formalUpdate.dart';
 import 'package:jb1/pages/information.dart';
 import 'package:jb1/pages/trackerupdate.dart';
+import 'package:location/location.dart';
 // import 'package:flutter_background_geolocation/flutter_background_geolocation.dart' as bg;
 
-class home extends StatefulWidget {
-  const home({super.key});
+class homepage2 extends StatefulWidget {
+  const homepage2({super.key});
 
   @override
-  State<home> createState() => _homeState();
+  State<homepage2> createState() => _homeState();
 }
 
 // Notes
@@ -41,7 +43,7 @@ String? id;
 // Live Tracking
 List liveTracking = [];
 
-class _homeState extends State<home> {
+class _homeState extends State<homepage2> {
   final user = FirebaseAuth.instance.currentUser!;
   final FirebaseFirestore db = FirebaseFirestore.instance;
   final CollectionReference lc =
@@ -897,48 +899,19 @@ String? longi;
 String? latit;
 
 class _Page2State extends State<Page2> {
-  // Completer<GoogleMapController> _googleMapController = Completer();
+  Location _locationController = new Location();
 
-  // CameraPosition? _cameraPosition;
+  static const LatLng _pGooglePlex = LatLng(7.178821, 125.597496);
+  static const LatLng _pApplePark = LatLng(7.078791936610768, 125.60789753165476);
 
-  // GEOLOCATION
-  Position? _currentLocation;
-  late bool servicePermission = false;
-  late LocationPermission permission;
-
-  String _currentAddress = "";
-
-  Future<Position> _getCurrentLocation() async {
-    servicePermission = await Geolocator.isLocationServiceEnabled();
-    if (!servicePermission) {
-      print("service disabled");
-    }
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-    }
-    return await Geolocator.getCurrentPosition();
-  }
-
-  // void locationHandler(){
-  //   Workmanager().ex
-  // }
+  LatLng? _currentP = null;
 
   @override
   void initState() {
     // TODO: implement initState
-    // _init();
     super.initState();
-
-    // bg.DeviceInfo? _deviceInfo;
-
-    // print(_deviceInfo);
+    getLocationUpdates();
   }
-
-  // _init() {
-  //   _cameraPosition =
-  //       CameraPosition(target: LatLng(11.576262, 104.92222), zoom: 15);
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -947,48 +920,63 @@ class _Page2State extends State<Page2> {
     return Stack(
       children: [
         Container(
-          height: sh,
-          child: Image.asset(
-            'lib/assets/map.jpg',
-            fit: BoxFit.fitHeight,
-          ),
-        ),
-        Container(
-            child: Positioned(
-          top: 150,
-          left: 50,
-          child: GlassyContainer(
-            height: 150,
-            width: 300,
-            color: Colors.white,
-            child: Column(
-              children: [
-                Container(
-                  child: SizedBox(height: 40),
-                ),
-                Container(
-                  height: 60,
-                  width: 250,
-                  child: ElevatedButton(
-                    child: Text(
-                      "Update Location",
-                      style: TextStyle(color: Colors.black, fontSize: 18),
-                    ),
-                    onPressed: () async {
-                      confirmUpdate();
-                      // _currentLocation = await _getCurrentLocation();
-                      // print(_currentLocation);
-                      // latit = _currentLocation?.latitude.toString();
-                      // longi = _currentLocation?.longitude.toString();
-                    },
-                  ),
+          child: _currentP == null
+              ? const Center(
+                  child: Text("Loading..."),
                 )
-              ],
-            ),
-          ),
-        ))
+              : GoogleMap(
+                  initialCameraPosition:
+                      CameraPosition(target: _pGooglePlex, zoom: 13),
+                  markers: {
+                    Marker(
+                        markerId: MarkerId("_currentLocation"),
+                        icon: BitmapDescriptor.defaultMarker,
+                        position: _currentP!),
+                    Marker(
+                        markerId: MarkerId("sourceLocation"),
+                        icon: BitmapDescriptor.defaultMarker,
+                        position: _pGooglePlex),
+                    Marker(
+                        markerId: MarkerId("destinationLocation"),
+                        icon: BitmapDescriptor.defaultMarker,
+                        position: _pApplePark)
+                  },
+                ),
+        )
       ],
     );
+  }
+
+  Future<void> getLocationUpdates() async {
+    bool _serviceEnabled;
+    PermissionStatus _permissionGranted;
+
+    _serviceEnabled = await _locationController.serviceEnabled();
+    if (_serviceEnabled) {
+      _serviceEnabled = await _locationController.requestService();
+    } else {
+      return;
+    }
+
+    _permissionGranted = await _locationController.hasPermission();
+    if (_permissionGranted == PermissionStatus.denied) {
+      _permissionGranted = await _locationController.requestPermission();
+      if (_permissionGranted != PermissionStatus.granted) {
+        return;
+      }
+    }
+
+    _locationController.onLocationChanged
+        .listen((LocationData currentLocation) {
+      if (currentLocation.latitude != null &&
+          currentLocation.longitude != null) {
+        setState(() {
+          _currentP =
+              LatLng(currentLocation.latitude!, currentLocation.longitude!);
+          print(_currentP);
+        });
+      }
+    });
   }
 
   // Widget _getMarker() {
