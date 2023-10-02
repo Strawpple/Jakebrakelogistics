@@ -10,6 +10,7 @@ import 'package:flutter/widgets.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:glassycontainer/glassycontainer.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:jb1/components/editprofile.dart';
 // import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'package:jb1/components/openDetails.dart';
@@ -1328,7 +1329,7 @@ class _Page4State extends State<Page3> {
                                               right: 15,
                                               child: IconButton(
                                                 onPressed: () async {
-                                                  selectphoto();
+                                                  openEditProfile();
                                                 },
                                                 icon: Icon(Icons.edit),
                                               ))
@@ -1349,7 +1350,7 @@ class _Page4State extends State<Page3> {
                                               right: 15,
                                               child: IconButton(
                                                 onPressed: () async {
-                                                  selectphoto();
+                                                  openEditProfile();
                                                 },
                                                 icon: Icon(Icons.edit),
                                               ))
@@ -1364,7 +1365,7 @@ class _Page4State extends State<Page3> {
                                       userAcc[index].firsname +
                                           ' ' +
                                           userAcc[index].lastname,
-                                      style: TextStyle(fontSize: 22),
+                                      style: TextStyle(fontSize: 15),
                                     ),
                                   ),
                                   Container(
@@ -1373,7 +1374,7 @@ class _Page4State extends State<Page3> {
                                   Container(
                                     child: Text(
                                       userAcc[index].phone,
-                                      style: TextStyle(fontSize: 22),
+                                      style: TextStyle(fontSize: 15),
                                     ),
                                   ),
                                   Container(
@@ -1382,7 +1383,7 @@ class _Page4State extends State<Page3> {
                                   Container(
                                     child: Text(
                                       userAcc[index].email,
-                                      style: TextStyle(fontSize: 22),
+                                      style: TextStyle(fontSize: 15),
                                     ),
                                   ),
                                 ]),
@@ -1392,6 +1393,20 @@ class _Page4State extends State<Page3> {
                 ],
               )),
             Container(
+              child: SizedBox(height: 25),
+            ),
+            // Container(
+            //   height: 50,
+            //   width: 200,
+            //   child: ElevatedButton(
+            //       style: ElevatedButton.styleFrom(primary: Colors.blue),
+            //       child: Text(
+            //         'Edit profile',
+            //         style: TextStyle(color: Colors.black, fontSize: 15),
+            //       ),
+            //       onPressed: () async {}),
+            // ),
+            Container(
               child: SizedBox(height: 5),
             ),
             Container(
@@ -1400,7 +1415,7 @@ class _Page4State extends State<Page3> {
               child: ElevatedButton(
                 child: Text(
                   "Log out",
-                  style: TextStyle(color: Colors.black, fontSize: 18),
+                  style: TextStyle(color: Colors.black, fontSize: 15),
                 ),
                 style: ElevatedButton.styleFrom(primary: Colors.red),
                 onPressed: () async {
@@ -1410,5 +1425,18 @@ class _Page4State extends State<Page3> {
             )
           ],
         )));
+  }
+
+  Future openEditProfile() async {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            content: StatefulBuilder(
+                builder: (BuildContext context, StateSetter setState) {
+              return editprofile();
+            }),
+          );
+        }).then((value) => {setState(() {})});
   }
 }
