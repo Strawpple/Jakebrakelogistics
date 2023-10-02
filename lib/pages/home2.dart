@@ -1,7 +1,9 @@
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:animated_notch_bottom_bar/animated_notch_bottom_bar/animated_notch_bottom_bar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -137,7 +139,6 @@ class _homeState extends State<homepage2> {
     const Page1(),
     const Page2(),
     const Page3(),
-    const Page4(),
   ];
 
   @override
@@ -176,17 +177,6 @@ class _homeState extends State<homepage2> {
                 ),
                 const BottomBarItem(
                   inActiveItem: Icon(
-                    Icons.map,
-                    color: Colors.blueGrey,
-                  ),
-                  activeItem: Icon(
-                    Icons.map,
-                    color: Colors.white,
-                  ),
-                  itemLabel: 'Page 2',
-                ),
-                const BottomBarItem(
-                  inActiveItem: Icon(
                     Icons.add,
                     color: Colors.blueGrey,
                   ),
@@ -194,7 +184,7 @@ class _homeState extends State<homepage2> {
                     Icons.settings,
                     color: Colors.white,
                   ),
-                  itemLabel: 'Page 3',
+                  itemLabel: 'Page 2',
                 ),
                 const BottomBarItem(
                   inActiveItem: Icon(
@@ -205,7 +195,7 @@ class _homeState extends State<homepage2> {
                     Icons.person,
                     color: Colors.white,
                   ),
-                  itemLabel: 'Page 4',
+                  itemLabel: 'Page 3',
                 ),
               ],
               onTap: (index) {
@@ -369,7 +359,7 @@ class _Page1State extends State<Page1> {
                 Container(
                   child: Text(
                     "Jakebrake Logistics Load Management",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 19),
                   ),
                 ),
                 Container(
@@ -380,7 +370,7 @@ class _Page1State extends State<Page1> {
                   width: sw,
                   child: Text(
                     "Trackers",
-                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                    style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
                   ),
                 ),
                 Container(
@@ -889,161 +879,161 @@ class _Page1State extends State<Page1> {
   }
 }
 
+// class Page2 extends StatefulWidget {
+//   const Page2({Key? key}) : super(key: key);
+//   @override
+//   State<Page2> createState() => _Page2State();
+// }
+
+// String? longi;
+// String? latit;
+
+// class _Page2State extends State<Page2> {
+//   Location _locationController = new Location();
+
+//   static const LatLng _pGooglePlex = LatLng(7.178821, 125.597496);
+//   static const LatLng _pApplePark =
+//       LatLng(7.078791936610768, 125.60789753165476);
+
+//   LatLng? _currentP = null;
+
+//   @override
+//   void initState() {
+//     // TODO: implement initState
+//     super.initState();
+//     getLocationUpdates();
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     final sw = MediaQuery.of(context).size.width;
+//     final sh = MediaQuery.of(context).size.height;
+//     return Stack(
+//       children: [
+//         Container(
+//           child: _currentP == null
+//               ? const Center(
+//                   child: Text("Loading..."),
+//                 )
+//               : GoogleMap(
+//                   initialCameraPosition:
+//                       CameraPosition(target: _pGooglePlex, zoom: 13),
+//                   markers: {
+//                     Marker(
+//                         markerId: MarkerId("_currentLocation"),
+//                         icon: BitmapDescriptor.defaultMarkerWithHue(
+//                             BitmapDescriptor.hueBlue),
+//                         position: _currentP!),
+//                     Marker(
+//                         markerId: MarkerId("sourceLocation"),
+//                         icon: BitmapDescriptor.defaultMarker,
+//                         position: _pGooglePlex),
+//                     Marker(
+//                         markerId: MarkerId("destinationLocation"),
+//                         icon: BitmapDescriptor.defaultMarker,
+//                         position: _pApplePark)
+//                   },
+//                 ),
+//         )
+//       ],
+//     );
+//   }
+
+//   Future<void> getLocationUpdates() async {
+//     bool _serviceEnabled;
+//     PermissionStatus _permissionGranted;
+
+//     _serviceEnabled = await _locationController.serviceEnabled();
+//     if (_serviceEnabled) {
+//       _serviceEnabled = await _locationController.requestService();
+//     } else {
+//       return;
+//     }
+
+//     _permissionGranted = await _locationController.hasPermission();
+//     if (_permissionGranted == PermissionStatus.denied) {
+//       _permissionGranted = await _locationController.requestPermission();
+//       if (_permissionGranted != PermissionStatus.granted) {
+//         return;
+//       }
+//     }
+
+//     _locationController.onLocationChanged
+//         .listen((LocationData currentLocation) {
+//       if (currentLocation.latitude != null &&
+//           currentLocation.longitude != null) {
+//         setState(() {
+//           _currentP =
+//               LatLng(currentLocation.latitude!, currentLocation.longitude!);
+//           print(_currentP);
+//         });
+//       }
+//     });
+//   }
+
+// Widget _getMarker() {
+//   return Container(
+//     width: 40,
+//     height: 40,
+//     decoration: BoxDecoration(
+//         color: Colors.white,
+//         borderRadius: BorderRadius.circular(100),
+//         boxShadow: [
+//           BoxShadow(
+//               color: Colors.grey,
+//               offset: Offset(0, 3),
+//               spreadRadius: 4,
+//               blurRadius: 6)
+//         ]),
+//     child: ClipOval(child: Image.asset('lib/assets/pic.png')),
+//   );
+// }
+
+// Widget _getMap() {
+//   return Stack(
+//     children: [
+//       Container(
+//           child: GoogleMap(
+//         initialCameraPosition: _cameraPosition!,
+//         mapType: MapType.normal,
+//         onMapCreated: (GoogleMapController controller) {
+//           if (!_googleMapController.isCompleted) {
+//             _googleMapController.complete(controller);
+//           }
+//         },
+//       )),
+//       Positioned.fill(
+//           child: Align(
+//         alignment: Alignment.center,
+//         child: _getMarker(),
+//       ))
+//     ],
+//   );
+// }
+
+//   Future confirmUpdate() async {
+//     return showDialog(
+//         context: context,
+//         builder: (BuildContext context) {
+//           return AlertDialog(
+//             content: StatefulBuilder(
+//                 builder: (BuildContext context, StateSetter setState) {
+//               return confirmLoc();
+//             }),
+//           );
+//         }).then((value) => {setState(() {})});
+//   }
+// }
+
 class Page2 extends StatefulWidget {
   const Page2({Key? key}) : super(key: key);
   @override
-  State<Page2> createState() => _Page2State();
-}
-
-String? longi;
-String? latit;
-
-class _Page2State extends State<Page2> {
-  Location _locationController = new Location();
-
-  static const LatLng _pGooglePlex = LatLng(7.178821, 125.597496);
-  static const LatLng _pApplePark =
-      LatLng(7.078791936610768, 125.60789753165476);
-
-  LatLng? _currentP = null;
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    getLocationUpdates();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final sw = MediaQuery.of(context).size.width;
-    final sh = MediaQuery.of(context).size.height;
-    return Stack(
-      children: [
-        Container(
-          child: _currentP == null
-              ? const Center(
-                  child: Text("Loading..."),
-                )
-              : GoogleMap(
-                  initialCameraPosition:
-                      CameraPosition(target: _pGooglePlex, zoom: 13),
-                  markers: {
-                    Marker(
-                        markerId: MarkerId("_currentLocation"),
-                        icon: BitmapDescriptor.defaultMarkerWithHue(
-                            BitmapDescriptor.hueBlue),
-                        position: _currentP!),
-                    Marker(
-                        markerId: MarkerId("sourceLocation"),
-                        icon: BitmapDescriptor.defaultMarker,
-                        position: _pGooglePlex),
-                    Marker(
-                        markerId: MarkerId("destinationLocation"),
-                        icon: BitmapDescriptor.defaultMarker,
-                        position: _pApplePark)
-                  },
-                ),
-        )
-      ],
-    );
-  }
-
-  Future<void> getLocationUpdates() async {
-    bool _serviceEnabled;
-    PermissionStatus _permissionGranted;
-
-    _serviceEnabled = await _locationController.serviceEnabled();
-    if (_serviceEnabled) {
-      _serviceEnabled = await _locationController.requestService();
-    } else {
-      return;
-    }
-
-    _permissionGranted = await _locationController.hasPermission();
-    if (_permissionGranted == PermissionStatus.denied) {
-      _permissionGranted = await _locationController.requestPermission();
-      if (_permissionGranted != PermissionStatus.granted) {
-        return;
-      }
-    }
-
-    _locationController.onLocationChanged
-        .listen((LocationData currentLocation) {
-      if (currentLocation.latitude != null &&
-          currentLocation.longitude != null) {
-        setState(() {
-          _currentP =
-              LatLng(currentLocation.latitude!, currentLocation.longitude!);
-          print(_currentP);
-        });
-      }
-    });
-  }
-
-  // Widget _getMarker() {
-  //   return Container(
-  //     width: 40,
-  //     height: 40,
-  //     decoration: BoxDecoration(
-  //         color: Colors.white,
-  //         borderRadius: BorderRadius.circular(100),
-  //         boxShadow: [
-  //           BoxShadow(
-  //               color: Colors.grey,
-  //               offset: Offset(0, 3),
-  //               spreadRadius: 4,
-  //               blurRadius: 6)
-  //         ]),
-  //     child: ClipOval(child: Image.asset('lib/assets/pic.png')),
-  //   );
-  // }
-
-  // Widget _getMap() {
-  //   return Stack(
-  //     children: [
-  //       Container(
-  //           child: GoogleMap(
-  //         initialCameraPosition: _cameraPosition!,
-  //         mapType: MapType.normal,
-  //         onMapCreated: (GoogleMapController controller) {
-  //           if (!_googleMapController.isCompleted) {
-  //             _googleMapController.complete(controller);
-  //           }
-  //         },
-  //       )),
-  //       Positioned.fill(
-  //           child: Align(
-  //         alignment: Alignment.center,
-  //         child: _getMarker(),
-  //       ))
-  //     ],
-  //   );
-  // }
-
-  Future confirmUpdate() async {
-    return showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            content: StatefulBuilder(
-                builder: (BuildContext context, StateSetter setState) {
-              return confirmLoc();
-            }),
-          );
-        }).then((value) => {setState(() {})});
-  }
-}
-
-class Page3 extends StatefulWidget {
-  const Page3({Key? key}) : super(key: key);
-  @override
-  State<Page3> createState() => _Page3State();
+  State<Page2> createState() => _Page3State();
 }
 
 List<accTracker> accTrack = [];
 
-class _Page3State extends State<Page3> {
+class _Page3State extends State<Page2> {
   final user = FirebaseAuth.instance.currentUser!;
   final FirebaseFirestore db = FirebaseFirestore.instance;
 
@@ -1094,7 +1084,7 @@ class _Page3State extends State<Page3> {
                 Container(
                   child: Text(
                     "Jakebrake Logistics Load Management",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 19),
                   ),
                 ),
                 Container(
@@ -1105,7 +1095,7 @@ class _Page3State extends State<Page3> {
                   margin: EdgeInsets.only(left: 15),
                   child: Text(
                     "Tracking Number",
-                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                    style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
                   ),
                 ),
                 Container(
@@ -1180,10 +1170,10 @@ class _Page3State extends State<Page3> {
   }
 }
 
-class Page4 extends StatefulWidget {
-  const Page4({Key? key}) : super(key: key);
+class Page3 extends StatefulWidget {
+  const Page3({Key? key}) : super(key: key);
   @override
-  State<Page4> createState() => _Page4State();
+  State<Page3> createState() => _Page4State();
 }
 
 String? uid;
@@ -1192,7 +1182,10 @@ List fetchPhone = [];
 List<Users> userAcc = [];
 String? newnum;
 
-class _Page4State extends State<Page4> {
+String? selectname;
+Uint8List? addimg;
+
+class _Page4State extends State<Page3> {
   final user = FirebaseAuth.instance.currentUser!;
   @override
   void initState() {
@@ -1239,6 +1232,19 @@ class _Page4State extends State<Page4> {
     });
   }
 
+  Future selectphoto() async {
+    try {
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+          type: FileType.media, allowMultiple: false, withData: true);
+      setState(() {
+        selectname = result!.files.first.name;
+        addimg = result!.files.first.bytes;
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final sw = MediaQuery.of(context).size.width;
@@ -1253,12 +1259,12 @@ class _Page4State extends State<Page4> {
             Container(
               child: Text(
                 "Personal Information",
-                style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 19, fontWeight: FontWeight.bold),
               ),
             ),
             Container(
               child: SizedBox(
-                height: 25,
+                height: 10,
               ),
             ),
             if (user.email == null)
@@ -1298,16 +1304,61 @@ class _Page4State extends State<Page4> {
                   child: Column(
                 children: [
                   Container(
-                    child: SizedBox(height: 15),
+                    child: SizedBox(height: 10),
                   ),
                   Container(
-                      height: 200,
+                      height: 350,
                       child: ListView.builder(
                           itemCount: userAcc.length,
                           itemBuilder: (context, index) {
                             if (userAcc.length == 1) {
                               return Container(
                                 child: Column(children: [
+                                  if (addimg == null)
+                                    Container(
+                                      child: Stack(
+                                        children: [
+                                          CircleAvatar(
+                                            radius: 100,
+                                            backgroundImage: AssetImage(
+                                                'lib/assets/profile.jpg'),
+                                          ),
+                                          Positioned(
+                                              bottom: 20,
+                                              right: 15,
+                                              child: IconButton(
+                                                onPressed: () async {
+                                                  selectphoto();
+                                                },
+                                                icon: Icon(Icons.edit),
+                                              ))
+                                        ],
+                                      ),
+                                    ),
+                                  if (addimg != null)
+                                    Container(
+                                      child: Stack(
+                                        children: [
+                                          CircleAvatar(
+                                              radius: 100,
+                                              backgroundImage: MemoryImage(
+                                                Uint8List.fromList(addimg!),
+                                              )),
+                                          Positioned(
+                                              bottom: 20,
+                                              right: 15,
+                                              child: IconButton(
+                                                onPressed: () async {
+                                                  selectphoto();
+                                                },
+                                                icon: Icon(Icons.edit),
+                                              ))
+                                        ],
+                                      ),
+                                    ),
+                                  Container(
+                                    child: SizedBox(height: 15),
+                                  ),
                                   Container(
                                     child: Text(
                                       userAcc[index].firsname +
@@ -1317,7 +1368,7 @@ class _Page4State extends State<Page4> {
                                     ),
                                   ),
                                   Container(
-                                    child: SizedBox(height: 15),
+                                    child: SizedBox(height: 10),
                                   ),
                                   Container(
                                     child: Text(
@@ -1326,7 +1377,7 @@ class _Page4State extends State<Page4> {
                                     ),
                                   ),
                                   Container(
-                                    child: SizedBox(height: 15),
+                                    child: SizedBox(height: 10),
                                   ),
                                   Container(
                                     child: Text(
@@ -1341,14 +1392,14 @@ class _Page4State extends State<Page4> {
                 ],
               )),
             Container(
-              child: SizedBox(height: 30),
+              child: SizedBox(height: 5),
             ),
             Container(
               height: 50,
               width: 200,
               child: ElevatedButton(
                 child: Text(
-                  "Sign Out",
+                  "Log out",
                   style: TextStyle(color: Colors.black, fontSize: 18),
                 ),
                 style: ElevatedButton.styleFrom(primary: Colors.red),

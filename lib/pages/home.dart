@@ -184,7 +184,6 @@ class _homeState extends State<home> {
     const Page1(),
     const Page2(),
     const Page3(),
-    const Page4(),
   ];
 
   @override
@@ -223,17 +222,6 @@ class _homeState extends State<home> {
                 ),
                 const BottomBarItem(
                   inActiveItem: Icon(
-                    Icons.map,
-                    color: Colors.blueGrey,
-                  ),
-                  activeItem: Icon(
-                    Icons.map,
-                    color: Colors.white,
-                  ),
-                  itemLabel: 'Page 2',
-                ),
-                const BottomBarItem(
-                  inActiveItem: Icon(
                     Icons.add,
                     color: Colors.blueGrey,
                   ),
@@ -241,7 +229,7 @@ class _homeState extends State<home> {
                     Icons.settings,
                     color: Colors.white,
                   ),
-                  itemLabel: 'Page 3',
+                  itemLabel: 'Page 2',
                 ),
                 const BottomBarItem(
                   inActiveItem: Icon(
@@ -252,7 +240,7 @@ class _homeState extends State<home> {
                     Icons.person,
                     color: Colors.white,
                   ),
-                  itemLabel: 'Page 4',
+                  itemLabel: 'Page 3',
                 ),
               ],
               onTap: (index) {
@@ -939,170 +927,12 @@ class _Page1State extends State<Page1> {
 class Page2 extends StatefulWidget {
   const Page2({Key? key}) : super(key: key);
   @override
-  State<Page2> createState() => _Page2State();
-}
-
-String? longi;
-String? latit;
-
-class _Page2State extends State<Page2> {
-  // Completer<GoogleMapController> _googleMapController = Completer();
-
-  // CameraPosition? _cameraPosition;
-
-  // GEOLOCATION
-  Position? _currentLocation;
-  late bool servicePermission = false;
-  late LocationPermission permission;
-
-  String _currentAddress = "";
-
-  Future<Position> _getCurrentLocation() async {
-    servicePermission = await Geolocator.isLocationServiceEnabled();
-    if (!servicePermission) {
-      print("service disabled");
-    }
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-    }
-    return await Geolocator.getCurrentPosition();
-  }
-
-  // void locationHandler(){
-  //   Workmanager().ex
-  // }
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    // _init();
-    super.initState();
-
-    // bg.DeviceInfo? _deviceInfo;
-
-    // print(_deviceInfo);
-  }
-
-  // _init() {
-  //   _cameraPosition =
-  //       CameraPosition(target: LatLng(11.576262, 104.92222), zoom: 15);
-  // }
-
-  @override
-  Widget build(BuildContext context) {
-    final sw = MediaQuery.of(context).size.width;
-    final sh = MediaQuery.of(context).size.height;
-    return Stack(
-      children: [
-        Container(
-          height: sh,
-          child: Image.asset(
-            'lib/assets/map.jpg',
-            fit: BoxFit.fitHeight,
-          ),
-        ),
-        Container(
-            child: Positioned(
-          top: 150,
-          left: 50,
-          child: GlassyContainer(
-            height: 150,
-            width: 300,
-            color: Colors.white,
-            child: Column(
-              children: [
-                Container(
-                  child: SizedBox(height: 40),
-                ),
-                Container(
-                  height: 60,
-                  width: 250,
-                  child: ElevatedButton(
-                    child: Text(
-                      "Update Location",
-                      style: TextStyle(color: Colors.black, fontSize: 18),
-                    ),
-                    onPressed: () async {
-                      confirmUpdate();
-                      // _currentLocation = await _getCurrentLocation();
-                      // print(_currentLocation);
-                      // latit = _currentLocation?.latitude.toString();
-                      // longi = _currentLocation?.longitude.toString();
-                    },
-                  ),
-                )
-              ],
-            ),
-          ),
-        ))
-      ],
-    );
-  }
-
-  // Widget _getMarker() {
-  //   return Container(
-  //     width: 40,
-  //     height: 40,
-  //     decoration: BoxDecoration(
-  //         color: Colors.white,
-  //         borderRadius: BorderRadius.circular(100),
-  //         boxShadow: [
-  //           BoxShadow(
-  //               color: Colors.grey,
-  //               offset: Offset(0, 3),
-  //               spreadRadius: 4,
-  //               blurRadius: 6)
-  //         ]),
-  //     child: ClipOval(child: Image.asset('lib/assets/pic.png')),
-  //   );
-  // }
-
-  // Widget _getMap() {
-  //   return Stack(
-  //     children: [
-  //       Container(
-  //           child: GoogleMap(
-  //         initialCameraPosition: _cameraPosition!,
-  //         mapType: MapType.normal,
-  //         onMapCreated: (GoogleMapController controller) {
-  //           if (!_googleMapController.isCompleted) {
-  //             _googleMapController.complete(controller);
-  //           }
-  //         },
-  //       )),
-  //       Positioned.fill(
-  //           child: Align(
-  //         alignment: Alignment.center,
-  //         child: _getMarker(),
-  //       ))
-  //     ],
-  //   );
-  // }
-
-  Future confirmUpdate() async {
-    return showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            content: StatefulBuilder(
-                builder: (BuildContext context, StateSetter setState) {
-              return confirmLoc();
-            }),
-          );
-        }).then((value) => {setState(() {})});
-  }
-}
-
-class Page3 extends StatefulWidget {
-  const Page3({Key? key}) : super(key: key);
-  @override
-  State<Page3> createState() => _Page3State();
+  State<Page2> createState() => _Page3State();
 }
 
 List<accTracker> accTrack = [];
 
-class _Page3State extends State<Page3> {
+class _Page3State extends State<Page2> {
   final user = FirebaseAuth.instance.currentUser!;
   final FirebaseFirestore db = FirebaseFirestore.instance;
 
@@ -1239,10 +1069,10 @@ class _Page3State extends State<Page3> {
   }
 }
 
-class Page4 extends StatefulWidget {
-  const Page4({Key? key}) : super(key: key);
+class Page3 extends StatefulWidget {
+  const Page3({Key? key}) : super(key: key);
   @override
-  State<Page4> createState() => _Page4State();
+  State<Page3> createState() => _PageState();
 }
 
 String? uid;
@@ -1251,7 +1081,7 @@ List fetchPhone = [];
 List<Users> userAcc = [];
 String? newnum;
 
-class _Page4State extends State<Page4> {
+class _PageState extends State<Page3> {
   final user = FirebaseAuth.instance.currentUser!;
   @override
   void initState() {

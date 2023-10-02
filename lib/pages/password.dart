@@ -63,7 +63,7 @@ class _passwordState extends State<password> {
     final sw = MediaQuery.of(context).size.width;
     return Container(
       width: 100,
-      height: 380,
+      height: 400,
       child: Column(children: [
         Container(
           child: SizedBox(height: 25),

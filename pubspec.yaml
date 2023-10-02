@@ -54,6 +54,7 @@ dependencies:
   flutter_local_notifications: ^15.1.1
   google_maps_flutter: ^2.5.0
   location: ^5.0.3
+  file_picker: ^5.5.0
   # google_maps_flutter: ^2.2.1
   # location: ^4.4.0
 
@@ -103,6 +104,7 @@ flutter:
     - lib/assets/jb1.png
     - lib/assets/pic.png
     - lib/assets/map.jpg
+    - lib/assets/profile.jpg
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
